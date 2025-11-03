@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUT Clinic - Select User</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/user-selection.css">
+</head>
+<body>
+    <div class="user-selection-container">
+        <!-- Header -->
+        <div class="hospital-header">
+            <div class="hospital-logo">
+                <i class="fas fa-hospital"></i>
+                <h1>DUT Clinic</h1>
+            </div>
+            <p class="hospital-tagline">Quality Healthcare Services</p>
+        </div>
+
+        <!-- User Selection Grid - Icons Only -->
+<div class="user-selection-grid">
+    <div class="user-icon-card" onclick="enterAsUser('doctor')">
+        <div class="user-icon doctor">
+            <i class="fas fa-user-md"></i>
+        </div>
+        <span class="user-label">Doctor</span>
+    </div>
+
+    <div class="user-icon-card" onclick="enterAsUser('nurse')">
+        <div class="user-icon nurse">
+            <i class="fas fa-user-nurse"></i>
+        </div>
+        <span class="user-label">Nurse</span>
+    </div>
+
+    <div class="user-icon-card" onclick="enterAsUser('patient')">
+        <div class="user-icon patient">
+            <i class="fas fa-user-injured"></i>
+        </div>
+        <span class="user-label">Patient</span>
+    </div>
+
+    <div class="user-icon-card" onclick="enterAsUser('pharmacist')">
+        <div class="user-icon pharmacist">
+            <i class="fas fa-pills"></i>
+        </div>
+        <span class="user-label">Pharmacist</span>
+    </div>
+
+    <div class="user-icon-card" onclick="enterAsUser('paramedic')">
+        <div class="user-icon paramedic">
+            <i class="fas fa-ambulance"></i>
+        </div>
+        <span class="user-label">Paramedic</span>
+    </div>
+
+    <div class="user-icon-card" onclick="enterAsUser('driver')">
+        <div class="user-icon driver">
+            <i class="fas fa-truck-medical"></i>
+        </div>
+        <span class="user-label">Driver</span>
+    </div>
+
+    <!-- ADD THIS RECEPTIONIST CARD -->
+    <div class="user-icon-card" onclick="enterAsUser('receptionist')">
+        <div class="user-icon receptionist">
+            <i class="fas fa-headset"></i>
+        </div>
+        <span class="user-label">Receptionist</span>
+    </div>
+</div>
+
+        <!-- Clinic Information Section -->
+        <div class="clinic-info-section">
+            <div class="info-card trading-hours">
+                <div class="info-header">
+                    <i class="fas fa-clock"></i>
+                    <h3>Clinic Hours</h3>
+                </div>
+                <div class="hours-list">
+                    <div class="hour-item">
+                        <span class="day">Monday - Friday</span>
+                        <span class="time">07:00 - 18:00</span>
+                    </div>
+                    <div class="hour-item">
+                        <span class="day">Saturday</span>
+                        <span class="time">08:00 - 14:00</span>
+                    </div>
+                    <div class="hour-item">
+                        <span class="day">Sunday</span>
+                        <span class="time">09:00 - 12:00</span>
+                    </div>
+                    <div class="hour-item emergency">
+                        <span class="day">Emergency</span>
+                        <span class="time">24/7</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card contact-info">
+                <div class="info-header">
+                    <i class="fas fa-phone"></i>
+                    <h3>Contact Info</h3>
+                </div>
+                <div class="contact-list">
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>031 373 6010</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Leratom1@dut.ac.za</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Ritson Campus, DUT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Day Awareness Event -->
+        <div class="health-event-banner">
+            <div class="event-content">
+                <div class="event-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="event-details">
+                    <h3>HEALTHDAY AWARENESS</h3>
+                    <p>Join us for a day of health screenings, wellness talks, and community health awareness</p>
+                    <div class="event-date">
+                        <i class="fas fa-calendar"></i>
+                        <span>November 4, 2024</span>
+                    </div>
+                </div>
+                <div class="event-cta">
+                    <button class="event-btn" onclick="showEventDetails()">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2024 DUT Clinic Management System | Developed by Tech-tonic Solutions</p>
+        </div>
+    </div>
+
+    <script src="scripts/user-selection.js"></script>
+</body>
+</html>

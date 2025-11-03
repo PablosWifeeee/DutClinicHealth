@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostics - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/diagnostics.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-microscope"></i>
+                    <h2>Diagnostics</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="../index.html"><i class="fas fa-home"></i> Main Menu</a></li>
+                <li class="active"><a href="diagnostics.html"><i class="fas fa-vial"></i> Lab Tests</a></li>
+                <li><a href="imaging.html"><i class="fas fa-x-ray"></i> Medical Imaging</a></li>
+                <li><a href="test-results.html"><i class="fas fa-file-medical"></i> Results</a></li>
+                <li><a href="upload-images.html"><i class="fas fa-upload"></i> Upload Images</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Diagnostic Services</h1>
+                    <p>Laboratory tests and medical imaging management</p>
+                </div>
+                <div class="header-right">
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="requestNewTest()">
+                            <i class="fas fa-plus"></i> Request Test
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>15</h3>
+                        <p>Pending Lab Tests</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 25%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-x-ray"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>8</h3>
+                        <p>Imaging Requests</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 15%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-medical"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>23</h3>
+                        <p>Results Ready</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 30%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>2.5</h3>
+                        <p>Avg Processing (days)</p>
+                    </div>
+                    <div class="stat-trend down">
+                        <i class="fas fa-arrow-down"></i> 10%
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Request Diagnostic Test</h2>
+                </div>
+                <form class="diagnostic-form" id="diagnosticForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patientSelect">Patient *</label>
+                            <select id="patientSelect" required>
+                                <option value="">Select Patient</option>
+                                <option value="john-doe">John Doe (22123456)</option>
+                                <option value="sarah-smith">Sarah Smith (22123457)</option>
+                                <option value="mike-wilson">Mike Wilson (22123458)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="testCategory">Test Category *</label>
+                            <select id="testCategory" required onchange="updateTestTypes()">
+                                <option value="">Select Category</option>
+                                <option value="laboratory">Laboratory Tests</option>
+                                <option value="imaging">Medical Imaging</option>
+                                <option value="pathology">Pathology</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="testType">Test Type *</label>
+                        <select id="testType" required>
+                            <option value="">Select Test Type</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clinicalNotes">Clinical Notes</label>
+                        <textarea id="clinicalNotes" rows="4" placeholder="Enter clinical justification and notes for this test..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="urgency">Urgency Level</label>
+                        <select id="urgency">
+                            <option value="routine">Routine</option>
+                            <option value="urgent">Urgent</option>
+                            <option value="stat">STAT (Immediate)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="resetForm()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Submit Test Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Recent Test Requests</h2>
+                    <a href="test-results.html" class="view-all">View All</a>
+                </div>
+                <div class="test-requests">
+                    <div class="test-item urgent">
+                        <div class="test-info">
+                            <h4>Complete Blood Count (CBC)</h4>
+                            <p>John Doe • Dr. Mkhize • Requested: Today 09:30</p>
+                            <span class="test-status urgent">URGENT</span>
+                        </div>
+                        <div class="test-actions">
+                            <button class="btn btn-small" onclick="viewTestDetails('CBC')">
+                                Details
+                            </button>
+                            <button class="btn btn-primary" onclick="uploadResults('CBC')">
+                                Upload Results
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="test-info">
+                            <h4>Chest X-Ray</h4>
+                            <p>Sarah Smith • Nurse Sarah • Requested: Yesterday</p>
+                            <span class="test-status processing">Processing</span>
+                        </div>
+                        <div class="test-actions">
+                            <button class="btn btn-small" onclick="viewTestDetails('X-Ray')">
+                                Details
+                            </button>
+                            <button class="btn btn-primary" onclick="uploadResults('X-Ray')">
+                                Upload Image
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item completed">
+                        <div class="test-info">
+                            <h4>Blood Glucose Test</h4>
+                            <p>Mike Wilson • Dr. Johnson • Requested: 2 days ago</p>
+                            <span class="test-status completed">Results Ready</span>
+                        </div>
+                        <div class="test-actions">
+                            <button class="btn btn-small" onclick="viewTestDetails('Glucose')">
+                                View Results
+                            </button>
+                            <button class="btn btn-outline" onclick="downloadResults('Glucose')">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="quick-actions-grid">
+                    <div class="action-card" onclick="uploadMedicalImage()">
+                        <div class="action-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        <h4>Upload Images</h4>
+                        <p>Upload X-rays, scans, or lab images</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="viewAllResults()">
+                        <div class="action-icon">
+                            <i class="fas fa-file-medical-alt"></i>
+                        </div>
+                        <h4>View Results</h4>
+                        <p>Access all test results and reports</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="manageTemplates()">
+                        <div class="action-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h4>Test Templates</h4>
+                        <p>Manage common test configurations</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="generateReports()">
+                        <div class="action-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h4>Generate Reports</h4>
+                        <p>Create diagnostic reports and analytics</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../scripts/diagnostics.js"></script>
+</body>
+</html>

@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Services - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #34495e;
+            --success: #27ae60;
+            --success-light: #d5f4e6;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --gray-light: #bdc3c7;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--secondary);
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--secondary), var(--accent));
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hospital-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hospital-logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .hospital-logo h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 24px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray-dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .emergency-hotline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--danger);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray-dark);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            margin: 20px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--gray-light);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            background-color: #f8f9fa;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            color: var(--secondary);
+        }
+
+        /* Emergency Container */
+        .emergency-container {
+            flex: 1;
+            padding: 0;
+        }
+
+        /* Emergency Alert Section */
+        .emergency-alert {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 0 30px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(238, 90, 82, 0.3);
+        }
+
+        .alert-content i {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .alert-content h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .alert-content p {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .emergency-btn {
+            background-color: white;
+            color: var(--danger);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .emergency-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .emergency-btn i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* Form Styles */
+        .emergency-form {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-help {
+            display: block;
+            margin-top: 5px;
+            color: var(--gray-dark);
+            font-size: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        /* Guidelines Grid */
+        .guidelines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .guideline-card {
+            text-align: center;
+            padding: 25px 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            transition: transform 0.3s;
+        }
+
+        .guideline-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .guideline-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+        }
+
+        .guideline-card h4 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .guideline-card p {
+            color: var(--gray-dark);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Response Times */
+        .response-times {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .response-item {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .response-item h4 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .response-item p {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .response-good {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .response-medium {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Campus Map Section */
+        .campus-map {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .map-legend, .emergency-contacts {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .map-legend h4, .emergency-contacts h4 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+
+        .steve-biko { background-color: #3498db; }
+        .ritson { background-color: #e74c3c; }
+        .ml-sultan { background-color: #9b59b6; }
+        .brickfield { background-color: #f39c12; }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+        }
+
+        .contact-item i {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .contact-item div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-item strong {
+            color: var(--secondary);
+        }
+
+        .contact-item span {
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        /* Confirmation Popup Styles */
+        .confirmation-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .confirmation-content {
+            background-color: var(--white);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            text-align: center;
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .confirmation-header {
+            background: linear-gradient(135deg, var(--success) 0%, #2ecc71 100%);
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .confirmation-header i {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        .confirmation-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .confirmation-body {
+            padding: 30px;
+        }
+
+        .confirmation-body p {
+            color: var(--gray-dark);
+            margin-bottom: 25px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .confirmation-details {
+            background-color: var(--success-light);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-item i {
+            color: var(--success);
+            font-size: 16px;
+            width: 20px;
+        }
+
+        .confirmation-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-ambulance"></i>
+                    <h2>Emergency</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="../index.html"><i class="fas fa-home"></i> Main Menu</a></li>
+                <li class="active"><a href="emergency.html"><i class="fas fa-plus-circle"></i> Emergency Request</a></li>
+                <li><a href="emergency-status.html"><i class="fas fa-list"></i> Active Emergencies</a></li>
+                <li><a href="ambulance-management.html"><i class="fas fa-ambulance"></i> Ambulance Status</a></li>
+                <li><a href="emergency-records.html"><i class="fas fa-file-medical"></i> Records</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Emergency Services</h1>
+                    <p>24/7 Emergency Medical Response</p>
+                </div>
+                <div class="header-right">
+                    <div class="emergency-hotline">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>EMERGENCY: 031 373 6010</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="emergency-container">
+                <!-- Quick Emergency Button -->
+                <div class="emergency-alert">
+                    <div class="alert-content">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h2>MEDICAL EMERGENCY?</h2>
+                        <p>Click the button below for immediate assistance</p>
+                        <button class="emergency-btn" onclick="requestEmergency()">
+                            <i class="fas fa-ambulance"></i>
+                            REQUEST EMERGENCY HELP
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Emergency Form -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Emergency Request Form</h2>
+                    </div>
+                    <form class="emergency-form" id="emergencyForm">
+                        <div class="form-group">
+                            <label for="emergencyType">Emergency Type *</label>
+                            <select id="emergencyType" required>
+                                <option value="">Select emergency type</option>
+                                <option value="cardiac">Cardiac Arrest</option>
+                                <option value="breathing">Breathing Difficulty</option>
+                                <option value="bleeding">Severe Bleeding</option>
+                                <option value="allergic">Allergic Reaction</option>
+                                <option value="unconscious">Unconsciousness</option>
+                                <option value="seizure">Seizure</option>
+                                <option value="injury">Serious Injury</option>
+                                <option value="other">Other Emergency</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location">DUT Residence Location *</label>
+                            <select id="location" required onchange="toggleSpecificLocation()">
+                                <option value="">Select your residence</option>
+                                
+                                <!-- Steve Biko Campus -->
+                                <optgroup label="Steve Biko Campus">
+                                    <option value="biko_mens">Steve Biko - Mens Residence</option>
+                                    <option value="biko_womens">Steve Biko - Womens Residence</option>
+                                    <option value="biko_postgrad">Steve Biko - Postgraduate Village</option>
+                                </optgroup>
+                                
+                                <!-- Ritson Campus -->
+                                <optgroup label="Ritson Campus">
+                                    <option value="ritson_mens">Ritson - Mens Residence</option>
+                                    <option value="ritson_womens">Ritson - Womens Residence</option>
+                                    <option value="ritson_mixed">Ritson - Mixed Residence</option>
+                                </optgroup>
+                                
+                                <!-- ML Sultan Campus -->
+                                <optgroup label="ML Sultan Campus">
+                                    <option value="mls_mens">ML Sultan - Mens Residence</option>
+                                    <option value="mls_womens">ML Sultan - Womens Residence</option>
+                                    <option value="mls_garden">ML Sultan - Garden Courts</option>
+                                </optgroup>
+                                
+                                <!-- Brickfield Campus -->
+                                <optgroup label="Brickfield Campus">
+                                    <option value="brickfield_residence">Brickfield Residence</option>
+                                    <option value="brickfield_apartments">Brickfield Apartments</option>
+                                </optgroup>
+                                
+                                <!-- City Campus -->
+                                <optgroup label="City Campus">
+                                    <option value="city_mens">City Campus - Mens Residence</option>
+                                    <option value="city_womens">City Campus - Womens Residence</option>
+                                </optgroup>
+                                
+                                <!-- Indumiso Campus -->
+                                <optgroup label="Indumiso Campus (Pietermaritzburg)">
+                                    <option value="indumiso_mens">Indumiso - Mens Residence</option>
+                                    <option value="indumiso_womens">Indumiso - Womens Residence</option>
+                                    <option value="indumiso_mixed">Indumiso - Mixed Residence</option>
+                                </optgroup>
+                                
+                                <!-- Riverside Campus -->
+                                <optgroup label="Riverside Campus">
+                                    <option value="riverside_residence">Riverside Residence</option>
+                                    <option value="riverside_apartments">Riverside Apartments</option>
+                                </optgroup>
+                                
+                                <!-- Off-Campus Residences -->
+                                <optgroup label="Off-Campus Residences">
+                                    <option value="morningside">Morningside Student Village</option>
+                                    <option value="cowey">Cowey Residence</option>
+                                    <option value="esselen">Esselen Residence</option>
+                                    <option value="felix">Felix Dlamini Residence</option>
+                                    <option value="mangosuthu">Mangosuthu Residence</option>
+                                </optgroup>
+                                
+                                <!-- Academic Buildings -->
+                                <optgroup label="Academic Buildings">
+                                    <option value="library_main">Main Library</option>
+                                    <option value="library_ritson">Ritson Library</option>
+                                    <option value="lecture_halls">Lecture Halls Complex</option>
+                                    <option value="engineering">Engineering Building</option>
+                                    <option value="science">Science Building</option>
+                                    <option value="business">Business Studies Building</option>
+                                    <option value="arts">Arts & Design Building</option>
+                                    <option value="sports_complex">Sports Complex</option>
+                                    <option value="student_center">Student Center</option>
+                                    <option value="cafeteria_main">Main Cafeteria</option>
+                                    <option value="cafeteria_ritson">Ritson Cafeteria</option>
+                                </optgroup>
+                                
+                                <!-- Other Locations -->
+                                <optgroup label="Other Campus Locations">
+                                    <option value="admin_building">Administration Building</option>
+                                    <option value="health_center">Student Health Center</option>
+                                    <option value="parking_main">Main Parking Lot</option>
+                                    <option value="parking_ritson">Ritson Parking</option>
+                                    <option value="campus_grounds">General Campus Grounds</option>
+                                    <option value="other">Other Location (Specify below)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="specificLocation" style="display: none;">
+                            <label for="exactLocation">Specific Location Details *</label>
+                            <input type="text" id="exactLocation" placeholder="e.g., Room 205, 2nd floor, Building A">
+                            <small class="form-help">Please provide as much detail as possible for faster response</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="patientCondition">Patient Condition *</label>
+                            <textarea id="patientCondition" rows="4" placeholder="Describe the patient's condition, symptoms, and any first aid provided..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="patientInfo">Patient Information</label>
+                            <input type="text" id="patientInfo" placeholder="Name and student number (if known)">
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="notifyContacts">
+                                Notify my emergency contacts
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" onclick="cancelEmergency()">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-ambulance"></i>
+                                REQUEST EMERGENCY ASSISTANCE
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Confirmation Popup -->
+                <div class="confirmation-popup" id="confirmationPopup">
+                    <div class="confirmation-content">
+                        <div class="confirmation-header">
+                            <i class="fas fa-check-circle"></i>
+                            <h2>Emergency Request Confirmed!</h2>
+                        </div>
+                        <div class="confirmation-body">
+                            <p>Your emergency request has been received and help is on the way to your location.</p>
+                            
+                            <div class="confirmation-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Request Time: <strong id="requestTime">Just now</strong></span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Location: <strong id="requestLocation">Steve Biko Campus</strong></span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-ambulance"></i>
+                                    <span>Estimated Arrival: <strong id="estimatedArrival">3-5 minutes</strong></span>
+                                </div>
+                            </div>
+                            
+                            <p><strong>Please stay on the line if you called, and wait at the entrance to guide the emergency team.</strong></p>
+                            
+                            <div class="confirmation-actions">
+                                <button class="btn btn-outline" onclick="closeConfirmation()">
+                                    Close
+                                </button>
+                                <button class="btn btn-success" onclick="viewEmergencyStatus()">
+                                    <i class="fas fa-list"></i>
+                                    View Status
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campus Map Section -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>DUT Campus Locations</h2>
+                    </div>
+                    <div class="campus-map">
+                        <div class="map-legend">
+                            <h4>Main Campuses:</h4>
+                            <div class="legend-item">
+                                <span class="legend-color steve-biko"></span>
+                                <span>Steve Biko Campus</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color ritson"></span>
+                                <span>Ritson Campus</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color ml-sultan"></span>
+                                <span>ML Sultan Campus</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color brickfield"></span>
+                                <span>Brickfield Campus</span>
+                            </div>
+                        </div>
+                        
+                        <div class="emergency-contacts">
+                            <h4>Emergency Contacts:</h4>
+                            <div class="contact-item">
+                                <i class="fas fa-phone-alt"></i>
+                                <div>
+                                    <strong>Campus Security</strong>
+                                    <span>031 373 2222</span>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-ambulance"></i>
+                                <div>
+                                    <strong>Clinic Emergency</strong>
+                                    <span>031 373 6010</span>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <div>
+                                    <strong>Student Support</strong>
+                                    <span>031 373 2194</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Guidelines -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Emergency Response Guidelines</h2>
+                    </div>
+                    <div class="guidelines-grid">
+                        <div class="guideline-card">
+                            <div class="guideline-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <h4>Call First</h4>
+                            <p>Call emergency services immediately for life-threatening situations before using this system</p>
+                        </div>
+                        
+                        <div class="guideline-card">
+                            <div class="guideline-icon">
+                                <i class="fas fa-first-aid"></i>
+                            </div>
+                            <h4>Provide First Aid</h4>
+                            <p>Perform basic first aid if trained and safe to do so while waiting for help</p>
+                        </div>
+                        
+                        <div class="guideline-card">
+                            <div class="guideline-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <h4>Clear Location</h4>
+                            <p>Provide exact residence name, room number, and meet ambulance at building entrance</p>
+                        </div>
+                        
+                        <div class="guideline-card">
+                            <div class="guideline-icon">
+                                <i class="fas fa-user-friends"></i>
+                            </div>
+                            <h4>Stay with Patient</h4>
+                            <p>Do not leave the patient alone until emergency services arrive</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Response Time Information -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Estimated Response Times</h2>
+                    </div>
+                    <div class="response-times">
+                        <div class="response-item">
+                            <h4>Steve Biko Campus</h4>
+                            <p>2-4 minutes</p>
+                            <span class="response-good">Fast Response</span>
+                        </div>
+                        <div class="response-item">
+                            <h4>Ritson Campus</h4>
+                            <p>3-5 minutes</p>
+                            <span class="response-good">Fast Response</span>
+                        </div>
+                        <div class="response-item">
+                            <h4>ML Sultan Campus</h4>
+                            <p>4-6 minutes</p>
+                            <span class="response-medium">Medium Response</span>
+                        </div>
+                        <div class="response-item">
+                            <h4>Brickfield Campus</h4>
+                            <p>5-8 minutes</p>
+                            <span class="response-medium">Medium Response</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle specific location field when "Other" is selected
+        function toggleSpecificLocation() {
+            const locationSelect = document.getElementById('location');
+            const specificLocation = document.getElementById('specificLocation');
+            const exactLocation = document.getElementById('exactLocation');
+            
+            if (locationSelect.value === 'other') {
+                specificLocation.style.display = 'block';
+                exactLocation.required = true;
+            } else {
+                specificLocation.style.display = 'none';
+                exactLocation.required = false;
+            }
+        }
+
+        // Handle emergency form submission
+        document.getElementById('emergencyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const emergencyType = document.getElementById('emergencyType').value;
+            const location = document.getElementById('location').value;
+            const exactLocation = document.getElementById('exactLocation').value;
+            const patientCondition = document.getElementById('patientCondition').value;
+            const patientInfo = document.getElementById('patientInfo').value;
+            const notifyContacts = document.getElementById('notifyContacts').checked;
+            
+            // In a real application, you would send this data to a server
+            console.log({
+                emergencyType: emergencyType,
+                location: location,
+                exactLocation: exactLocation,
+                patientCondition: patientCondition,
+                patientInfo: patientInfo,
+                notifyContacts: notifyContacts
+            });
+            
+            // Update confirmation details
+            document.getElementById('requestLocation').textContent = getLocationName(location);
+            document.getElementById('estimatedArrival').textContent = getEstimatedArrival(location);
+            
+            // Show confirmation popup
+            document.getElementById('confirmationPopup').style.display = 'flex';
+        });
+
+        // Quick emergency request
+        function requestEmergency() {
+            // Scroll to form
+            document.getElementById('emergencyForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Cancel emergency
+        function cancelEmergency() {
+            if (confirm('Are you sure you want to cancel this emergency request?')) {
+                document.getElementById('emergencyForm').reset();
+                document.getElementById('specificLocation').style.display = 'none';
+            }
+        }
+
+        // Close confirmation popup
+        function closeConfirmation() {
+            document.getElementById('confirmationPopup').style.display = 'none';
+            document.getElementById('emergencyForm').reset();
+            document.getElementById('specificLocation').style.display = 'none';
+        }
+
+        // View emergency status
+        function viewEmergencyStatus() {
+            alert('Redirecting to emergency status page...');
+            // In a real application, this would redirect to the status page
+            closeConfirmation();
+        }
+
+        // Helper function to get location name
+        function getLocationName(locationValue) {
+            const locationSelect = document.getElementById('location');
+            const selectedOption = locationSelect.options[locationSelect.selectedIndex];
+            return selectedOption.text;
+        }
+
+        // Helper function to get estimated arrival time
+        function getEstimatedArrival(locationValue) {
+            // Simple logic to determine estimated arrival based on campus
+            if (locationValue.includes('biko')) return '2-4 minutes';
+            if (locationValue.includes('ritson')) return '3-5 minutes';
+            if (locationValue.includes('mls')) return '4-6 minutes';
+            if (locationValue.includes('brickfield')) return '5-8 minutes';
+            if (locationValue.includes('city')) return '3-5 minutes';
+            if (locationValue.includes('indumiso')) return '8-12 minutes';
+            if (locationValue.includes('riverside')) return '6-9 minutes';
+            return '5-8 minutes';
+        }
+    </script>
+</body>
+</html>

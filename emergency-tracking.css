@@ -1,0 +1,344 @@
+/* Emergency Tracking Styles */
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid var(--danger);
+    border-radius: 20px;
+    color: var(--danger);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.live-indicator i {
+    color: var(--danger);
+    animation: pulse 1.5s infinite;
+}
+
+.filter-options {
+    display: flex;
+    gap: 1rem;
+}
+
+.filter-options select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--medium-gray);
+    border-radius: 8px;
+    background: var(--white);
+}
+
+/* Emergency Requests List */
+.emergency-requests {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.emergency-request {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border-left: 4px solid var(--accent-blue);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.emergency-request:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.emergency-request.critical {
+    border-left-color: var(--danger);
+    background: rgba(220, 53, 69, 0.05);
+}
+
+.emergency-request.urgent {
+    border-left-color: var(--warning);
+    background: rgba(255, 193, 7, 0.05);
+}
+
+.emergency-request.responded {
+    border-left-color: var(--success);
+    background: rgba(40, 167, 69, 0.05);
+}
+
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.student-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-blue);
+}
+
+.student-details h3 {
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.student-details p {
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+}
+
+.emergency-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-badge.requested {
+    background: rgba(255, 193, 7, 0.1);
+    color: var(--warning);
+}
+
+.status-badge.dispatched {
+    background: rgba(23, 162, 184, 0.1);
+    color: var(--info);
+}
+
+.status-badge.on-scene {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--success);
+}
+
+.status-badge.transporting {
+    background: rgba(108, 117, 125, 0.1);
+    color: var(--dark-gray);
+}
+
+.request-time {
+    font-size: 0.8rem;
+    color: var(--dark-gray);
+}
+
+.request-details {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-group h4 {
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.detail-group p {
+    color: var(--text-dark);
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.emergency-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+/* Response Team */
+.response-team {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.team-member {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--light-gray);
+    border-radius: 10px;
+    border-left: 4px solid var(--accent-blue);
+}
+
+.member-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-blue);
+}
+
+.member-info h4 {
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.member-info p {
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.member-info .status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status.available {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--success);
+}
+
+.status.responding {
+    background: rgba(255, 193, 7, 0.1);
+    color: var(--warning);
+}
+
+.status.busy {
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--danger);
+}
+
+/* Confirmation Message Styles */
+.confirmation-message {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    border-radius: 15px;
+    padding: 3rem;
+    text-align: center;
+    color: white;
+    animation: slideInUp 0.5s ease;
+}
+
+.confirmation-content {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.confirmation-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    animation: bounce 1s ease;
+}
+
+.confirmation-content h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.confirmation-content p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.confirmation-details {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    justify-content: flex-start;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.detail-item i {
+    font-size: 1.2rem;
+    width: 20px;
+}
+
+.confirmation-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .request-details {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .request-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .emergency-status {
+        align-items: flex-start;
+    }
+    
+    .confirmation-actions {
+        flex-direction: column;
+    }
+    
+    .filter-options {
+        flex-direction: column;
+    }
+}

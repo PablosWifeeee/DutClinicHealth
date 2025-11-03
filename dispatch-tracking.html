@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispatch Tracking - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --gray-light: #bdc3c7;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--secondary);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--secondary), var(--accent));
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hospital-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hospital-logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .hospital-logo h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 24px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray-dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 20px;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-actions .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .quick-actions .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Dispatch Tracking Layout */
+        .dispatch-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            padding: 20px;
+            height: calc(100vh - 120px);
+        }
+
+        .dispatch-sidebar {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--gray-light);
+        }
+
+        .dispatch-map-container {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Emergency List Styles */
+        .emergency-list-section {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .emergency-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .emergency-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .emergency-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .emergency-item.active {
+            background-color: #e3f2fd;
+            border-left-color: var(--primary-dark);
+        }
+
+        .emergency-info h4 {
+            margin: 0 0 5px 0;
+            color: var(--primary);
+        }
+
+        .emergency-info p {
+            margin: 0;
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .emergency-info small {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .badge-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .badge-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        /* Ambulance List Styles */
+        .ambulance-list-section {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ambulance-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .ambulance-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--success);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ambulance-item.en-route {
+            border-left-color: var(--warning);
+        }
+
+        .ambulance-item.on-scene {
+            border-left-color: var(--primary);
+        }
+
+        .ambulance-item.transporting {
+            border-left-color: #9b59b6;
+        }
+
+        .ambulance-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .ambulance-item.active {
+            background-color: #e3f2fd;
+        }
+
+        .ambulance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .ambulance-id {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .ambulance-status {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .status-en-route {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .status-on-scene {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary);
+        }
+
+        .status-transporting {
+            background-color: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+        }
+
+        .ambulance-details {
+            font-size: 13px;
+            color: var(--gray-dark);
+        }
+
+        .ambulance-eta {
+            font-weight: 600;
+            color: var(--danger);
+            margin-top: 5px;
+        }
+
+        /* Map Styles */
+        .campus-map {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-location {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .map-location:hover {
+            z-index: 20;
+        }
+
+        .location-student {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e74c3c;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .location-ambulance {
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            border-radius: 50% 50% 50% 0;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.3);
+        }
+
+        .location-ambulance.en-route {
+            background: #f39c12;
+            box-shadow: 0 0 0 4px rgba(243, 156, 18, 0.3);
+        }
+
+        .location-ambulance.on-scene {
+            background: #3498db;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.3);
+        }
+
+        .location-ambulance.transporting {
+            background: #9b59b6;
+            box-shadow: 0 0 0 4px rgba(155, 89, 182, 0.3);
+        }
+
+        .location-hospital {
+            width: 18px;
+            height: 18px;
+            background: #27ae60;
+            border-radius: 4px;
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.3);
+        }
+
+        .location-label {
+            position: absolute;
+            background: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transform: translate(-50%, -100%);
+            margin-top: -10px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 30;
+        }
+
+        .map-location:hover .location-label {
+            opacity: 1;
+        }
+
+        .ambulance-route {
+            position: absolute;
+            height: 3px;
+            background: #3498db;
+            transform-origin: 0 0;
+            z-index: 5;
+            opacity: 0.7;
+        }
+
+        .route-to-hospital {
+            background: #27ae60;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Map Controls */
+        .map-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            z-index: 100;
+        }
+
+        .map-legend {
+            margin-bottom: 15px;
+        }
+
+        .legend-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-student { background: #e74c3c; }
+        .legend-ambulance { background: #3498db; }
+        .legend-hospital { background: #27ae60; }
+
+        .time-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+
+        /* Dispatch Details Panel */
+        .dispatch-details {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 300px;
+            z-index: 100;
+            display: none;
+        }
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .details-title {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .close-details {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .details-content {
+            font-size: 14px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .detail-value {
+            color: var(--gray-dark);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Live Tracking Indicator */
+        .live-tracking {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-ambulance"></i>
+                    <h2>Paramedic Portal</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="paramedic-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="emergency-records.html"><i class="fas fa-phone-alt"></i> Emergency Records</a></li>
+                <li><a href="patient-care.html"><i class="fas fa-heartbeat"></i> Patient Care</a></li>
+                <li class="active"><a href="dispatch-tracking.html"><i class="fas fa-map-marked-alt"></i> Dispatch Tracking</a></li>
+                <li><a href="ambulance-status.html"><i class="fas fa-ambulance"></i> Ambulance Status</a></li>
+                <li><a href="medical-supplies.html"><i class="fas fa-first-aid"></i> Medical Supplies</a></li>
+                <li><a href="paramedic-schedule.html"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+                <li><a href="messaging.html"><i class="fas fa-comments"></i> Messages</a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Switch User</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Paramedic+Alex&background=3498db&color=fff" alt="Paramedic">
+                    <div class="user-info">
+                        <span class="user-name">Alex Morgan</span>
+                        <span class="user-role">Senior Paramedic</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Dispatch Tracking</h1>
+                    <p>Real-time ambulance tracking and emergency response monitoring</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i> Refresh Data
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dispatch-container">
+                <!-- Sidebar with emergencies and ambulances -->
+                <div class="dispatch-sidebar">
+                    <div class="emergency-list-section">
+                        <div class="section-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Active Emergencies
+                            <span class="badge badge-danger" style="margin-left: auto;">3</span>
+                        </div>
+                        <div class="emergency-list" id="emergencyList">
+                            <!-- Emergency items will be dynamically generated -->
+                        </div>
+                    </div>
+                    
+                    <div class="ambulance-list-section">
+                        <div class="section-title">
+                            <i class="fas fa-ambulance"></i>
+                            Ambulance Fleet
+                            <span class="badge badge-success" style="margin-left: auto;" id="availableAmbulancesCount">2</span>
+                        </div>
+                        <div class="ambulance-list" id="ambulanceList">
+                            <!-- Ambulance items will be dynamically generated -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Map Area -->
+                <div class="dispatch-map-container">
+                    <div class="live-tracking">
+                        <div class="pulse-dot"></div>
+                        LIVE TRACKING ACTIVE
+                    </div>
+                    
+                    <div class="map-controls">
+                        <div class="map-legend">
+                            <div class="legend-title">Map Legend</div>
+                            <div class="legend-item">
+                                <div class="legend-color legend-student"></div>
+                                <span>Student Emergency</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color legend-ambulance"></div>
+                                <span>Ambulance</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color legend-hospital"></div>
+                                <span>Hospital</span>
+                            </div>
+                        </div>
+                        <div class="time-display" id="currentTime">
+                            Last Updated: <span id="updateTime">--:--:--</span>
+                        </div>
+                    </div>
+                    
+                    <div class="dispatch-details" id="dispatchDetails">
+                        <div class="details-header">
+                            <div class="details-title" id="detailsTitle">Dispatch Details</div>
+                            <button class="close-details" onclick="closeDetails()">&times;</button>
+                        </div>
+                        <div class="details-content" id="detailsContent">
+                            <!-- Details content will be dynamically populated -->
+                        </div>
+                    </div>
+                    
+                    <div class="campus-map" id="campusMap">
+                        <!-- Map elements will be dynamically generated -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Sample data for emergencies and ambulances
+        const studentEmergencies = {
+            'sarah_johnson': {
+                id: 'sarah_johnson',
+                name: 'Sarah Johnson',
+                studentId: '22123457',
+                condition: 'Severe Allergic Reaction',
+                location: 'Library, 2nd Floor',
+                mapPosition: { x: 35, y: 65 },
+                priority: 'HIGH',
+                reported: '5 minutes ago',
+                status: 'waiting'
+            },
+            'michael_brown': {
+                id: 'michael_brown',
+                name: 'Michael Brown',
+                studentId: '22123458',
+                condition: 'Suspected Fractured Arm',
+                location: 'Sports Complex',
+                mapPosition: { x: 70, y: 40 },
+                priority: 'MEDIUM',
+                reported: '8 minutes ago',
+                status: 'ambulance_assigned',
+                ambulanceId: 'AMB-002'
+            },
+            'emily_davis': {
+                id: 'emily_davis',
+                name: 'Emily Davis',
+                studentId: '22123459',
+                condition: 'Severe Asthma Attack',
+                location: 'Student Residence B, Room 305',
+                mapPosition: { x: 60, y: 80 },
+                priority: 'HIGH',
+                reported: '12 minutes ago',
+                status: 'ambulance_en_route',
+                ambulanceId: 'AMB-003'
+            }
+        };
+
+        const ambulances = {
+            'AMB-001': {
+                id: 'AMB-001',
+                status: 'available',
+                crew: '2 Paramedics',
+                equipment: 'Fully Stocked',
+                location: 'Main Campus',
+                mapPosition: { x: 25, y: 75 },
+                currentAssignment: null,
+                eta: null
+            },
+            'AMB-002': {
+                id: 'AMB-002',
+                status: 'on_scene',
+                crew: '2 Paramedics',
+                equipment: 'Fully Stocked',
+                location: 'Sports Complex',
+                mapPosition: { x: 70, y: 40 },
+                currentAssignment: 'michael_brown',
+                eta: 'On Scene'
+            },
+            'AMB-003': {
+                id: 'AMB-003',
+                status: 'en_route',
+                crew: '1 Paramedic, 1 EMT',
+                equipment: 'Fully Stocked',
+                location: 'North Campus',
+                mapPosition: { x: 45, y: 70 },
+                currentAssignment: 'emily_davis',
+                eta: '3 min'
+            },
+            'AMB-004': {
+                id: 'AMB-004',
+                status: 'transporting',
+                crew: '2 Paramedics',
+                equipment: 'Fully Stocked',
+                location: 'En route to Hospital',
+                mapPosition: { x: 80, y: 25 },
+                currentAssignment: 'previous_patient',
+                eta: '7 min'
+            }
+        };
+
+        const hospitalLocation = { x: 90, y: 10, name: 'DUT Medical Center' };
+        let activeDispatch = null;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderEmergencyList();
+            renderAmbulanceList();
+            renderCampusMap();
+            updateTimeDisplay();
+            
+            // Update data every 10 seconds
+            setInterval(updateTrackingData, 10000);
+            
+            // Simulate ambulance movement
+            setInterval(simulateAmbulanceMovement, 2000);
+        });
+
+        // Render emergency list
+        function renderEmergencyList() {
+            const container = document.getElementById('emergencyList');
+            container.innerHTML = '';
+            
+            Object.values(studentEmergencies).forEach(emergency => {
+                const emergencyItem = document.createElement('div');
+                emergencyItem.className = `emergency-item ${activeDispatch === emergency.id ? 'active' : ''}`;
+                emergencyItem.onclick = () => showEmergencyDetails(emergency.id);
+                
+                emergencyItem.innerHTML = `
+                    <div class="emergency-info">
+                        <h4>${emergency.name}</h4>
+                        <p>${emergency.condition} • ${emergency.location}</p>
+                        <small>Reported: ${emergency.reported} • 
+                            <span class="badge ${emergency.priority === 'HIGH' ? 'badge-danger' : 'badge-warning'}">${emergency.priority}</span>
+                        </small>
+                        ${emergency.ambulanceId ? `<small>Ambulance: ${emergency.ambulanceId}</small>` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(emergencyItem);
+            });
+        }
+
+        // Render ambulance list
+        function renderAmbulanceList() {
+            const container = document.getElementById('ambulanceList');
+            container.innerHTML = '';
+            
+            // Update available count
+            const availableCount = Object.values(ambulances).filter(a => a.status === 'available').length;
+            document.getElementById('availableAmbulancesCount').textContent = availableCount;
+            
+            Object.values(ambulances).forEach(ambulance => {
+                const ambulanceItem = document.createElement('div');
+                ambulanceItem.className = `ambulance-item ${ambulance.status.replace('_', '-')} ${activeDispatch === ambulance.id ? 'active' : ''}`;
+                ambulanceItem.onclick = () => showAmbulanceDetails(ambulance.id);
+                
+                const statusText = ambulance.status.replace('_', ' ').toUpperCase();
+                const statusClass = `status-${ambulance.status.replace('_', '-')}`;
+                
+                ambulanceItem.innerHTML = `
+                    <div class="ambulance-header">
+                        <div class="ambulance-id">${ambulance.id}</div>
+                        <div class="ambulance-status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="ambulance-details">
+                        ${ambulance.crew} • ${ambulance.location}
+                        ${ambulance.eta ? `<div class="ambulance-eta">ETA: ${ambulance.eta}</div>` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(ambulanceItem);
+            });
+        }
+
+        // Render campus map with all locations
+        function renderCampusMap() {
+            const map = document.getElementById('campusMap');
+            map.innerHTML = '';
+            
+            // Add hospital location
+            addMapLocation(hospitalLocation, 'hospital', hospitalLocation.name);
+            
+            // Add student emergency locations
+            Object.values(studentEmergencies).forEach(student => {
+                addMapLocation(student.mapPosition, 'student', `${student.name} - ${student.condition}`);
+            });
+            
+            // Add ambulance locations
+            Object.values(ambulances).forEach(ambulance => {
+                if (ambulance.status !== 'maintenance' && ambulance.status !== 'out_of_service') {
+                    addMapLocation(ambulance.mapPosition, 'ambulance', `${ambulance.id} - ${ambulance.status.replace('_', ' ')}`, ambulance.status);
+                }
+            });
+            
+            // Draw routes for assigned ambulances
+            Object.values(ambulances).forEach(ambulance => {
+                if (ambulance.currentAssignment && studentEmergencies[ambulance.currentAssignment]) {
+                    const student = studentEmergencies[ambulance.currentAssignment];
+                    drawRoute(ambulance.mapPosition, student.mapPosition, '#3498db');
+                    
+                    // If transporting, draw route to hospital
+                    if (ambulance.status === 'transporting') {
+                        drawRoute(student.mapPosition, hospitalLocation, '#27ae60');
+                    }
+                }
+            });
+        }
+
+        // Add a location to the map
+        function addMapLocation(position, type, label, status = null) {
+            const map = document.getElementById('campusMap');
+            const locationEl = document.createElement('div');
+            
+            locationEl.className = `map-location location-${type}`;
+            if (status) locationEl.classList.add(status.replace('_', '-'));
+            
+            locationEl.style.left = `${position.x}%`;
+            locationEl.style.top = `${position.y}%`;
+            
+            locationEl.innerHTML = `<div class="location-label">${label}</div>`;
+            
+            // Add click handler based on type
+            if (type === 'student') {
+                const studentId = Object.keys(studentEmergencies).find(
+                    key => studentEmergencies[key].name === label.split(' - ')[0]
+                );
+                locationEl.onclick = () => showEmergencyDetails(studentId);
+            } else if (type === 'ambulance') {
+                const ambulanceId = label.split(' - ')[0];
+                locationEl.onclick = () => showAmbulanceDetails(ambulanceId);
+            } else if (type === 'hospital') {
+                locationEl.onclick = () => showHospitalDetails();
+            }
+            
+            map.appendChild(locationEl);
+        }
+
+        // Draw a route between two points
+        function drawRoute(start, end, color) {
+            const map = document.getElementById('campusMap');
+            const route = document.createElement('div');
+            route.className = 'ambulance-route';
+            if (color === '#27ae60') route.classList.add('route-to-hospital');
+            route.style.background = color;
+            
+            // Calculate distance and angle
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            
+            // Set route properties
+            route.style.width = `${distance}%`;
+            route.style.left = `${start.x}%`;
+            route.style.top = `${start.y}%`;
+            route.style.transform = `rotate(${angle}deg)`;
+            
+            map.appendChild(route);
+        }
+
+        // Show emergency details
+        function showEmergencyDetails(emergencyId) {
+            const emergency = studentEmergencies[emergencyId];
+            if (!emergency) return;
+            
+            activeDispatch = emergencyId;
+            
+            const detailsPanel = document.getElementById('dispatchDetails');
+            const detailsTitle = document.getElementById('detailsTitle');
+            const detailsContent = document.getElementById('detailsContent');
+            
+            detailsTitle.textContent = `Emergency: ${emergency.name}`;
+            
+            let assignedAmbulanceInfo = '';
+            if (emergency.ambulanceId) {
+                const ambulance = ambulances[emergency.ambulanceId];
+                assignedAmbulanceInfo = `
+                    <div class="detail-row">
+                        <span class="detail-label">Assigned Ambulance:</span>
+                        <span class="detail-value">${ambulance.id} (${ambulance.status.replace('_', ' ')})</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">ETA:</span>
+                        <span class="detail-value">${ambulance.eta || 'Calculating...'}</span>
+                    </div>
+                `;
+            }
+            
+            detailsContent.innerHTML = `
+                <div class="detail-row">
+                    <span class="detail-label">Student ID:</span>
+                    <span class="detail-value">${emergency.studentId}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Condition:</span>
+                    <span class="detail-value">${emergency.condition}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Location:</span>
+                    <span class="detail-value">${emergency.location}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Priority:</span>
+                    <span class="detail-value"><span class="badge ${emergency.priority === 'HIGH' ? 'badge-danger' : 'badge-warning'}">${emergency.priority}</span></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Reported:</span>
+                    <span class="detail-value">${emergency.reported}</span>
+                </div>
+                ${assignedAmbulanceInfo}
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="assignAmbulance('${emergencyId}')">
+                        <i class="fas fa-ambulance"></i> Assign Ambulance
+                    </button>
+                    <button class="btn btn-success" onclick="updateEmergencyStatus('${emergencyId}')">
+                        <i class="fas fa-check"></i> Mark Resolved
+                    </button>
+                </div>
+            `;
+            
+            detailsPanel.style.display = 'block';
+            renderEmergencyList();
+            renderAmbulanceList();
+        }
+
+        // Show ambulance details
+        function showAmbulanceDetails(ambulanceId) {
+            const ambulance = ambulances[ambulanceId];
+            if (!ambulance) return;
+            
+            activeDispatch = ambulanceId;
+            
+            const detailsPanel = document.getElementById('dispatchDetails');
+            const detailsTitle = document.getElementById('detailsTitle');
+            const detailsContent = document.getElementById('detailsContent');
+            
+            detailsTitle.textContent = `Ambulance: ${ambulance.id}`;
+            
+            let assignmentInfo = '';
+            if (ambulance.currentAssignment) {
+                const emergency = studentEmergencies[ambulance.currentAssignment];
+                if (emergency) {
+                    assignmentInfo = `
+                        <div class="detail-row">
+                            <span class="detail-label">Current Assignment:</span>
+                            <span class="detail-value">${emergency.name} (${emergency.condition})</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            detailsContent.innerHTML = `
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value"><span class="ambulance-status status-${ambulance.status.replace('_', '-')}">${ambulance.status.replace('_', ' ').toUpperCase()}</span></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Crew:</span>
+                    <span class="detail-value">${ambulance.crew}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Equipment:</span>
+                    <span class="detail-value">${ambulance.equipment}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Location:</span>
+                    <span class="detail-value">${ambulance.location}</span>
+                </div>
+                ${ambulance.eta ? `
+                <div class="detail-row">
+                    <span class="detail-label">ETA:</span>
+                    <span class="detail-value">${ambulance.eta}</span>
+                </div>
+                ` : ''}
+                ${assignmentInfo}
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="updateAmbulanceStatus('${ambulanceId}')">
+                        <i class="fas fa-sync-alt"></i> Update Status
+                    </button>
+                    <button class="btn btn-success" onclick="contactCrew('${ambulanceId}')">
+                        <i class="fas fa-phone"></i> Contact Crew
+                    </button>
+                </div>
+            `;
+            
+            detailsPanel.style.display = 'block';
+            renderEmergencyList();
+            renderAmbulanceList();
+        }
+
+        // Show hospital details
+        function showHospitalDetails() {
+            const detailsPanel = document.getElementById('dispatchDetails');
+            const detailsTitle = document.getElementById('detailsTitle');
+            const detailsContent = document.getElementById('detailsContent');
+            
+            detailsTitle.textContent = 'DUT Medical Center';
+            
+            detailsContent.innerHTML = `
+                <div class="detail-row">
+                    <span class="detail-label">Type:</span>
+                    <span class="detail-value">Campus Medical Facility</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Capacity:</span>
+                    <span class="detail-value">24/7 Emergency Services</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Contact:</span>
+                    <span class="detail-value">(031) 123-4567</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Location:</span>
+                    <span class="detail-value">North Campus, Building A</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="contactHospital()">
+                        <i class="fas fa-phone"></i> Contact Hospital
+                    </button>
+                </div>
+            `;
+            
+            detailsPanel.style.display = 'block';
+        }
+
+        // Close details panel
+        function closeDetails() {
+            const detailsPanel = document.getElementById('dispatchDetails');
+            detailsPanel.style.display = 'none';
+            activeDispatch = null;
+            renderEmergencyList();
+            renderAmbulanceList();
+        }
+
+        // Assign ambulance to emergency
+        function assignAmbulance(emergencyId) {
+            const emergency = studentEmergencies[emergencyId];
+            if (!emergency) return;
+            
+            // Find available ambulance
+            const availableAmbulance = Object.values(ambulances).find(a => a.status === 'available');
+            
+            if (availableAmbulance) {
+                // Update ambulance status
+                availableAmbulance.status = 'en_route';
+                availableAmbulance.currentAssignment = emergencyId;
+                availableAmbulance.eta = '5 min';
+                
+                // Update emergency status
+                emergency.status = 'ambulance_en_route';
+                emergency.ambulanceId = availableAmbulance.id;
+                
+                // Show success message
+                alert(`Ambulance ${availableAmbulance.id} assigned to ${emergency.name}`);
+                
+                // Refresh displays
+                renderEmergencyList();
+                renderAmbulanceList();
+                renderCampusMap();
+                closeDetails();
+            } else {
+                alert('No available ambulances at the moment. Please try again later.');
+            }
+        }
+
+        // Update emergency status
+        function updateEmergencyStatus(emergencyId) {
+            const emergency = studentEmergencies[emergencyId];
+            if (!emergency) return;
+            
+            if (confirm(`Mark emergency for ${emergency.name} as resolved?`)) {
+                // If ambulance was assigned, update its status
+                if (emergency.ambulanceId) {
+                    const ambulance = ambulances[emergency.ambulanceId];
+                    if (ambulance) {
+                        ambulance.status = 'available';
+                        ambulance.currentAssignment = null;
+                        ambulance.eta = null;
+                    }
+                }
+                
+                // Remove emergency
+                delete studentEmergencies[emergencyId];
+                
+                // Refresh displays
+                renderEmergencyList();
+                renderAmbulanceList();
+                renderCampusMap();
+                closeDetails();
+                
+                alert(`Emergency for ${emergency.name} has been resolved and removed from the system.`);
+            }
+        }
+
+        // Update ambulance status
+        function updateAmbulanceStatus(ambulanceId) {
+            const ambulance = ambulances[ambulanceId];
+            if (!ambulance) return;
+            
+            const statusOptions = ['available', 'en_route', 'on_scene', 'transporting'];
+            const currentIndex = statusOptions.indexOf(ambulance.status);
+            const nextIndex = (currentIndex + 1) % statusOptions.length;
+            
+            ambulance.status = statusOptions[nextIndex];
+            
+            // Update ETA based on status
+            switch (ambulance.status) {
+                case 'en_route':
+                    ambulance.eta = '5 min';
+                    break;
+                case 'on_scene':
+                    ambulance.eta = 'On Scene';
+                    break;
+                case 'transporting':
+                    ambulance.eta = '7 min';
+                    break;
+                default:
+                    ambulance.eta = null;
+            }
+            
+            // Refresh displays
+            renderAmbulanceList();
+            renderCampusMap();
+            
+            // Update details if open
+            if (activeDispatch === ambulanceId) {
+                showAmbulanceDetails(ambulanceId);
+            }
+            
+            alert(`Ambulance ${ambulanceId} status updated to: ${ambulance.status.replace('_', ' ')}`);
+        }
+
+        // Contact crew
+        function contactCrew(ambulanceId) {
+            alert(`Connecting to crew of ${ambulanceId}...`);
+            // In a real application, this would initiate a call or message
+        }
+
+        // Contact hospital
+        function contactHospital() {
+            alert('Connecting to DUT Medical Center...');
+            // In a real application, this would initiate a call
+        }
+
+        // Update time display
+        function updateTimeDisplay() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('updateTime').textContent = timeString;
+        }
+
+        // Refresh data
+        function refreshData() {
+            // In a real application, this would fetch updated data from the server
+            updateTimeDisplay();
+            renderEmergencyList();
+            renderAmbulanceList();
+            renderCampusMap();
+            
+            alert('Data refreshed successfully!');
+        }
+
+        // Update tracking data (simulated)
+        function updateTrackingData() {
+            // In a real application, this would fetch real-time updates
+            updateTimeDisplay();
+            
+            // Simulate occasional status changes
+            if (Math.random() > 0.7) {
+                // Randomly update an ambulance's ETA
+                const activeAmbulances = Object.values(ambulances).filter(a => a.status !== 'available');
+                if (activeAmbulances.length > 0) {
+                    const randomAmbulance = activeAmbulances[Math.floor(Math.random() * activeAmbulances.length)];
+                    if (randomAmbulance.eta && randomAmbulance.eta !== 'On Scene') {
+                        const currentEta = parseInt(randomAmbulance.eta);
+                        if (!isNaN(currentEta)) {
+                            randomAmbulance.eta = `${Math.max(1, currentEta - 1)} min`;
+                        }
+                    }
+                }
+                
+                renderAmbulanceList();
+            }
+        }
+
+        // Simulate ambulance movement
+        function simulateAmbulanceMovement() {
+            Object.values(ambulances).forEach(ambulance => {
+                if (ambulance.status !== 'available' && ambulance.currentAssignment) {
+                    const emergency = studentEmergencies[ambulance.currentAssignment];
+                    if (emergency) {
+                        // Move ambulance towards emergency or hospital
+                        let target = emergency.mapPosition;
+                        if (ambulance.status === 'transporting') {
+                            target = hospitalLocation;
+                        }
+                        
+                        // Calculate direction
+                        const dx = target.x - ambulance.mapPosition.x;
+                        const dy = target.y - ambulance.mapPosition.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // Move if not too close
+                        if (distance > 2) {
+                            const speed = 0.2; // Movement speed
+                            ambulance.mapPosition.x += (dx / distance) * speed;
+                            ambulance.mapPosition.y += (dy / distance) * speed;
+                        }
+                    }
+                }
+            });
+            
+            // Update the map
+            renderCampusMap();
+        }
+    </script>
+</body>
+</html>

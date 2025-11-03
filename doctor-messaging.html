@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUT Clinic - Dr. Banele Mkhize Messaging</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f6fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .messaging-container {
+            display: grid;
+            grid-template-columns: 250px 400px 250px;
+            width: 100%;
+            max-width: 900px;
+            height: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            background: var(--primary);
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logo h2 {
+            font-size: 1.3rem;
+        }
+        
+        .nav-links {
+            list-style: none;
+            margin-top: 20px;
+            flex: 1;
+        }
+        
+        .nav-links li {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links li:hover, .nav-links li.active {
+            background: rgba(255,255,255,0.1);
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .nav-links li i {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        
+        .nav-links li a {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+        }
+        
+        /* Right Sidebar - Patient Info */
+        .patient-sidebar {
+            background: #f8f9fa;
+            border-left: 1px solid #e1e1e1;
+            padding: 15px;
+        }
+        
+        .patient-profile {
+            text-align: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        
+        .patient-avatar-large {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 0 auto 10px;
+        }
+        
+        .patient-details-sidebar h3 {
+            margin-bottom: 5px;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .patient-info-item {
+            margin: 10px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid var(--secondary);
+            font-size: 0.85rem;
+        }
+        
+        .info-label {
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            margin-bottom: 3px;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+        
+        /* Center Chat Area - Minimized */
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-left: 1px solid #e1e1e1;
+            border-right: 1px solid #e1e1e1;
+        }
+        
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+        }
+        
+        .patient-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .patient-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 0.9rem;
+        }
+        
+        .patient-details h3 {
+            margin-bottom: 3px;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        
+        .patient-details .status {
+            font-size: 0.75rem;
+            color: var(--success);
+        }
+        
+        .real-time-indicator {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            margin-left: 5px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+        
+        .messages-container {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            max-width: 85%;
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
+            line-height: 1.3;
+            font-size: 0.85rem;
+        }
+        
+        .message.received {
+            background: white;
+            border: 1px solid #e1e1e1;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message.sent {
+            background: var(--secondary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message-time {
+            font-size: 0.65rem;
+            margin-top: 5px;
+            opacity: 0.7;
+            text-align: right;
+        }
+        
+        .message.received .message-time {
+            text-align: left;
+        }
+        
+        .message-sender {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+        
+        .input-area {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: white;
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            resize: none;
+            height: 40px;
+            font-size: 0.85rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .message-input:focus {
+            border-color: var(--secondary);
+        }
+        
+        .send-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .send-btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+        
+        .start-chat-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            margin: 10px auto;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+        
+        .start-chat-btn:hover {
+            background: #219653;
+            transform: scale(1.1);
+        }
+        
+        .typing-indicator {
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 8px 15px;
+            align-self: flex-start;
+            background: white;
+            border-radius: 15px;
+            border: 1px solid #e1e1e1;
+            margin-bottom: 8px;
+        }
+        
+        .private-chat-notice {
+            text-align: center;
+            padding: 10px;
+            background: #e3f2fd;
+            color: var(--primary);
+            font-size: 0.8rem;
+            border-bottom: 1px solid #b3e5fc;
+            margin-bottom: 8px;
+        }
+        
+        .chat-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+        }
+        
+        .welcome-message {
+            text-align: center;
+            color: #7f8c8d;
+            margin: auto;
+            font-style: italic;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+        
+        .chat-icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 15px;
+        }
+        
+        .icon-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .user-profile {
+            padding: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-profile-inner {
+            display: flex;
+            align-items: center;
+        }
+        
+        .doctor-avatar-small {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.8rem;
+        }
+        
+        .user-details {
+            font-size: 0.8rem;
+        }
+        
+        .user-details div:first-child {
+            font-weight: 600;
+        }
+        
+        .user-details div:last-child {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="messaging-container">
+        <!-- Left Navigation Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2><i class="fas fa-clinic-medical"></i> DUT Clinic</h2>
+                <p>Doctor Portal</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="doctor-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="active"><i class="fas fa-comments"></i> Messages</li>
+                <li><a href="doctor-patients.html"><i class="fas fa-user-injured"></i> Patients</a></li>
+                <li><a href="doctor-appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+            </ul>
+            
+            <div class="user-profile">
+                <div class="user-profile-inner">
+                    <div class="doctor-avatar-small">BM</div>
+                    <div class="user-details">
+                        <div>Dr. Banele Mkhize</div>
+                        <div>General Practitioner</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Center Chat Area - Minimized -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <div class="patient-info">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-details">
+                        <h3>John Doe <span class="real-time-indicator"></span></h3>
+                        <div class="status">Online - Private Chat</div>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-phone"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="private-chat-notice">
+                <i class="fas fa-lock"></i> Private 1-on-1 Chat
+            </div>
+            
+            <div class="messages-container" id="messagesContainer">
+                <!-- Start Chat Icon -->
+                <div class="chat-icons" id="startChatSection">
+                    <button class="start-chat-btn" id="startChatBtn">
+                        <i class="fas fa-comment-medical"></i>
+                    </button>
+                    <div class="icon-label">Start Conversation</div>
+                </div>
+                
+                <!-- Messages will appear here -->
+                <div class="welcome-message" id="welcomeMessage">
+                    Click the start button to begin chatting with John Doe
+                </div>
+            </div>
+            
+            <div class="input-area">
+                <textarea class="message-input" placeholder="Type your message..." id="messageInput" disabled></textarea>
+                <button class="send-btn" id="sendButton" disabled>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Right Sidebar - Patient Information -->
+        <div class="patient-sidebar">
+            <div class="patient-profile">
+                <div class="patient-avatar-large">JD</div>
+                <div class="patient-details-sidebar">
+                    <h3>John Doe</h3>
+                    <p style="color: #7f8c8d; font-size: 0.8rem;">Patient</p>
+                </div>
+            </div>
+            
+            <div class="patient-info-item">
+                <div class="info-label">Last Visit</div>
+                <div class="info-value">October 25, 2024</div>
+            </div>
+            
+            <div class="patient-info-item">
+                <div class="info-label">Condition</div>
+                <div class="info-value">Hypertension</div>
+            </div>
+            
+            <div class="patient-info-item">
+                <div class="info-label">Medication</div>
+                <div class="info-value">Lisinopril 10mg</div>
+            </div>
+            
+            <div class="patient-info-item">
+                <div class="info-label">Next Appointment</div>
+                <div class="info-value">November 15, 2024</div>
+            </div>
+            
+            <button class="btn" style="background: var(--secondary); color: white; width: 100%; margin-top: 15px; padding: 8px; font-size: 0.8rem;">
+                <i class="fas fa-file-medical"></i> View Records
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Private conversation data
+        const privateConversation = [
+            { sender: 'patient', message: 'Good morning Dr. Mkhize, I wanted to follow up on our consultation yesterday about my blood pressure', time: '09:15 AM' },
+            { sender: 'doctor', message: 'Good morning John. How are your readings today? Any improvement since we adjusted your medication?', time: '09:16 AM' },
+            { sender: 'patient', message: 'Much better, thank you. The morning reading was 125/82, which is a big improvement', time: '09:18 AM' }
+        ];
+
+        // DOM Elements
+        const messagesContainer = document.getElementById('messagesContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const startChatBtn = document.getElementById('startChatBtn');
+        const startChatSection = document.getElementById('startChatSection');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+
+        let chatStarted = false;
+
+        // Start chat function
+        function startChat() {
+            if (!chatStarted) {
+                chatStarted = true;
+                
+                // Remove start chat section
+                startChatSection.style.display = 'none';
+                welcomeMessage.style.display = 'none';
+                
+                // Enable input and send button
+                messageInput.disabled = false;
+                sendButton.disabled = false;
+                messageInput.placeholder = "Type your message to John Doe...";
+                
+                // Load initial conversation
+                loadConversation();
+            }
+        }
+
+        // Load conversation
+        function loadConversation() {
+            privateConversation.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${msg.sender === 'doctor' ? 'sent' : 'received'}`;
+                
+                if (msg.sender === 'patient') {
+                    messageDiv.innerHTML = `
+                        <div class="message-sender">John Doe</div>
+                        <div>${msg.message}</div>
+                        <div class="message-time">${msg.time}</div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div>${msg.message}</div>
+                        <div class="message-time">${msg.time}</div>
+                    `;
+                }
+                
+                messagesContainer.appendChild(messageDiv);
+            });
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Send message
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message === '') return;
+            
+            const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // Add message to UI immediately
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message sent';
+            messageDiv.innerHTML = `
+                <div>${message}</div>
+                <div class="message-time">${currentTime}</div>
+            `;
+            messagesContainer.appendChild(messageDiv);
+            
+            // Clear input and scroll
+            messageInput.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Add to conversation data
+            privateConversation.push({
+                sender: 'doctor',
+                message: message,
+                time: currentTime
+            });
+            
+            // Simulate patient response after delay
+            simulatePatientResponse();
+        }
+
+        // Simulate patient response
+        function simulatePatientResponse() {
+            const responses = [
+                "Thank you doctor, that helps a lot",
+                "I understand, I'll follow your advice",
+                "When should I schedule my next check-up?",
+                "The readings have been stable, thank you",
+                "Should I monitor any specific symptoms?"
+            ];
+            
+            // Show typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.textContent = 'John Doe is typing...';
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            setTimeout(() => {
+                // Remove typing indicator
+                typingDiv.remove();
+                
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                const responseTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'message received';
+                responseDiv.innerHTML = `
+                    <div class="message-sender">John Doe</div>
+                    <div>${randomResponse}</div>
+                    <div class="message-time">${responseTime}</div>
+                `;
+                messagesContainer.appendChild(responseDiv);
+                
+                // Add to conversation data
+                privateConversation.push({
+                    sender: 'patient',
+                    message: randomResponse,
+                    time: responseTime
+                });
+                
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 2000);
+        }
+
+        // Event Listeners
+        startChatBtn.addEventListener('click', startChat);
+        sendButton.addEventListener('click', sendMessage);
+
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Redirect function for doctor dashboard
+        function redirectToDoctorMessaging() {
+            window.location.href = 'doctor-messaging.html';
+        }
+    </script>
+</body>
+</html>

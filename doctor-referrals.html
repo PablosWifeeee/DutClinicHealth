@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Referrals - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles - Same as dashboard */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --gray-light: #bdc3c7;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--secondary);
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles - Same as dashboard */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--secondary), var(--accent));
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hospital-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hospital-logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .hospital-logo h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 24px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray-dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 20px;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray-dark);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            margin: 0 30px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--gray-light);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            background-color: #f8f9fa;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            color: var(--secondary);
+        }
+
+        /* Patient List Styles */
+        .patient-list {
+            padding: 20px;
+            display: grid;
+            gap: 20px;
+        }
+
+        .patient-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .patient-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .patient-card.referred {
+            border-left-color: var(--success);
+            background-color: #f8fff9;
+        }
+
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .patient-info h3 {
+            margin: 0 0 5px 0;
+            color: var(--secondary);
+        }
+
+        .patient-info p {
+            margin: 0;
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .patient-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .status-referred {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .patient-details {
+            margin-bottom: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 120px;
+            color: var(--secondary);
+        }
+
+        .detail-value {
+            flex: 1;
+            color: var(--gray-dark);
+        }
+
+        .patient-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Referral Letter Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            background-color: var(--primary);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: white;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .close-btn:hover {
+            color: #f8f9fa;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .referral-letter {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--gray-light);
+        }
+        
+        .letter-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .letter-header h2 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .letter-content {
+            line-height: 1.6;
+        }
+        
+        .letter-section {
+            margin-bottom: 20px;
+        }
+        
+        .letter-section h4 {
+            color: var(--secondary);
+            margin-bottom: 8px;
+            border-bottom: 1px solid var(--gray-light);
+            padding-bottom: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: var(--white);
+            color: var(--secondary);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .completed-message {
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(39, 174, 96, 0.1);
+            border-radius: 4px;
+            margin-top: 15px;
+            color: var(--success);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-user-md"></i>
+                    <h2>Doctor Portal</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="doctor-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="doctor-consultations.html"><i class="fas fa-stethoscope"></i> Consultations</a></li>
+                <li><a href="doctor-patients.html"><i class="fas fa-users"></i> My Patients</a></li>
+                <li><a href="doctor-diagnostics.html"><i class="fas fa-microscope"></i> Diagnostics</a></li>
+                <li><a href="doctor-prescriptions.html"><i class="fas fa-prescription"></i> Prescriptions</a></li>
+                <li class="active"><a href="doctor-referrals.html"><i class="fas fa-file-medical"></i> Referrals</a></li>
+                <li><a href="doctor-messaging.html"><i class="fas fa-comments"></i> Messaging</a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Switch User</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Dr+Smith&background=667eea&color=fff" alt="Doctor">
+                    <div class="user-info">
+                        <span class="user-name">Dr. Banele Mkhize</span>
+                        <span class="user-role">Senior Physician</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Patient Referrals</h1>
+                    <p>Manage external referrals for specialist care</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">4</span>
+                    </div>
+                    <a href="doctor-dashboard.html" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </header>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Students Requiring Referral</h2>
+                    <span class="status-badge status-pending">4 Students</span>
+                </div>
+                
+                <div class="patient-list" id="patientList">
+                    <!-- Patient cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Referral Letter Modal -->
+    <div class="modal-overlay" id="referralModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Referral Letter</h3>
+                <button class="close-btn" onclick="closeReferralModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="referral-letter">
+                    <div class="letter-header">
+                        <h2>DURBAN UNIVERSITY OF TECHNOLOGY CLINIC</h2>
+                        <p>Steve Biko Campus • Durban, 4001 • Tel: 031 123 4567</p>
+                    </div>
+                    
+                    <div class="letter-content">
+                        <div class="letter-section">
+                            <h4>TO:</h4>
+                            <p id="referralFacility">Netcare Durban Specialists</p>
+                            <p>123 Medical Center, Durban, 4001</p>
+                        </div>
+                        
+                        <div class="letter-section">
+                            <h4>RE: REFERRAL OF PATIENT</h4>
+                            <p><strong>Patient Name:</strong> <span id="referralPatientName">-</span></p>
+                            <p><strong>Student ID:</strong> <span id="referralStudentId">-</span></p>
+                            <p><strong>Date of Birth:</strong> <span id="referralDob">-</span></p>
+                            <p><strong>DUT Clinic No:</strong> <span id="referralClinicNo">-</span></p>
+                        </div>
+                        
+                        <div class="letter-section">
+                            <h4>CLINICAL INFORMATION</h4>
+                            <p><strong>Presenting Complaint:</strong> <span id="referralComplaint">-</span></p>
+                            <p><strong>History of Present Illness:</strong></p>
+                            <p id="referralHistory">Patient presented with symptoms requiring specialist evaluation and management beyond the scope of our student health services.</p>
+                            
+                            <p><strong>Relevant Findings:</strong></p>
+                            <p id="referralFindings">Clinical examination and preliminary investigations suggest the need for specialist intervention.</p>
+                        </div>
+                        
+                        <div class="letter-section">
+                            <h4>REASON FOR REFERRAL</h4>
+                            <p id="referralReason">For further specialist evaluation, diagnosis, and management. We would appreciate your expert opinion and continued care of this patient.</p>
+                        </div>
+                        
+                        <div class="letter-section">
+                            <h4>INITIAL MANAGEMENT</h4>
+                            <p>Basic symptomatic treatment provided. Preliminary investigations conducted as per our facility capabilities.</p>
+                        </div>
+                        
+                        <div class="letter-section">
+                            <h4>REQUESTED CONSULTATION</h4>
+                            <p>We kindly request your evaluation and management of this patient. Please provide feedback regarding diagnosis and treatment plan.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="letter-section">
+                        <p><strong>Referring Physician:</strong> Dr. Banele Mkhize</p>
+                        <p><strong>Qualifications:</strong> MBChB, Dip PEC</p>
+                        <p><strong>Contact:</strong> DUT Clinic - 031 123 4567</p>
+                        <p><strong>Date:</strong> <span id="referralDate">-</span></p>
+                    </div>
+                </div>
+                
+                <form id="referralForm">
+                    <div class="form-group">
+                        <label for="specialistFacility">Specialist Facility</label>
+                        <select id="specialistFacility" class="form-control" onchange="updateReferralFacility()">
+                            <option value="Netcare Durban Specialists">Netcare Durban Specialists</option>
+                            <option value="St. Augustine's Hospital">St. Augustine's Hospital</option>
+                            <option value="Entabeni Hospital">Entabeni Hospital</option>
+                            <option value="Life Westville Hospital">Life Westville Hospital</option>
+                            <option value="Addington Hospital">Addington Hospital</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="presentingComplaint">Presenting Complaint</label>
+                        <input type="text" id="presentingComplaint" class="form-control" placeholder="e.g., Persistent abdominal pain, Chest discomfort" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clinicalHistory">Clinical History</label>
+                        <textarea id="clinicalHistory" class="form-control" rows="3" placeholder="Detailed history of present illness..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clinicalFindings">Clinical Findings</label>
+                        <textarea id="clinicalFindings" class="form-control" rows="3" placeholder="Examination findings and test results..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="referralPurpose">Purpose of Referral</label>
+                        <textarea id="referralPurpose" class="form-control" rows="2" placeholder="Specific reason for referral..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeReferralModal()">Cancel</button>
+                <button class="btn btn-success" onclick="completeReferral()">
+                    <i class="fas fa-check-circle"></i> Complete Referral
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Student data for referrals
+        const students = [
+            {
+                id: '22123501',
+                name: 'Hlohonolofatso Dithebe',
+                dob: '2001-05-15',
+                clinicNo: 'DUTC-2023-001',
+                condition: 'Persistent migraines',
+                status: 'pending',
+                referred: false
+            },
+            {
+                id: '22123502',
+                name: 'Mihle Dube',
+                dob: '2000-08-22',
+                clinicNo: 'DUTC-2023-002',
+                condition: 'Chronic back pain',
+                status: 'pending',
+                referred: false
+            },
+            {
+                id: '22123503',
+                name: 'Moratwa Bekwa',
+                dob: '2002-01-30',
+                clinicNo: 'DUTC-2023-003',
+                condition: 'Recurrent respiratory infections',
+                status: 'pending',
+                referred: false
+            },
+            {
+                id: '22123504',
+                name: 'Ngosha Munyai',
+                dob: '1999-11-12',
+                clinicNo: 'DUTC-2023-004',
+                condition: 'Gastrointestinal issues',
+                status: 'pending',
+                referred: false
+            }
+        ];
+
+        let currentStudent = null;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            populatePatientList();
+        });
+
+        // Populate patient list
+        function populatePatientList() {
+            const patientList = document.getElementById('patientList');
+            patientList.innerHTML = '';
+
+            students.forEach(student => {
+                const patientCard = document.createElement('div');
+                patientCard.className = `patient-card ${student.referred ? 'referred' : ''}`;
+                
+                const actionButtons = student.referred ? 
+                    `<div class="completed-message">
+                        <i class="fas fa-check-circle"></i> Referral Completed
+                    </div>` :
+                    `<div class="patient-actions">
+                        <button class="btn btn-primary btn-small" onclick="openReferralModal('${student.id}')">
+                            <i class="fas fa-file-medical"></i> Refer Patient
+                        </button>
+                    </div>`;
+                
+                patientCard.innerHTML = `
+                    <div class="patient-header">
+                        <div class="patient-info">
+                            <h3>${student.name}</h3>
+                            <p>Student ID: ${student.id} • Condition: ${student.condition}</p>
+                        </div>
+                        <span class="patient-status status-${student.referred ? 'referred' : 'pending'}">
+                            ${student.referred ? 'REFERRED' : 'PENDING'}
+                        </span>
+                    </div>
+                    
+                    <div class="patient-details">
+                        <div class="detail-row">
+                            <div class="detail-label">Date of Birth:</div>
+                            <div class="detail-value">${student.dob}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Clinic Number:</div>
+                            <div class="detail-value">${student.clinicNo}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Medical Condition:</div>
+                            <div class="detail-value">${student.condition}</div>
+                        </div>
+                    </div>
+                    
+                    ${actionButtons}
+                `;
+                
+                patientList.appendChild(patientCard);
+            });
+        }
+
+        // Open referral modal
+        function openReferralModal(studentId) {
+            currentStudent = students.find(s => s.id === studentId);
+            
+            if (!currentStudent) return;
+            
+            // Set current date
+            const today = new Date();
+            document.getElementById('referralDate').textContent = today.toLocaleDateString();
+            
+            // Set patient information
+            document.getElementById('referralPatientName').textContent = currentStudent.name;
+            document.getElementById('referralStudentId').textContent = currentStudent.id;
+            document.getElementById('referralDob').textContent = currentStudent.dob;
+            document.getElementById('referralClinicNo').textContent = currentStudent.clinicNo;
+            document.getElementById('referralComplaint').textContent = currentStudent.condition;
+            
+            // Set default values in form
+            document.getElementById('presentingComplaint').value = currentStudent.condition;
+            document.getElementById('clinicalHistory').value = `Student has been experiencing ${currentStudent.condition.toLowerCase()} for several weeks. Initial management at DUT Clinic has provided limited relief.`;
+            document.getElementById('clinicalFindings').value = `Clinical examination reveals findings consistent with ${currentStudent.condition.toLowerCase()}. Preliminary tests conducted.`;
+            document.getElementById('referralPurpose').value = `Specialist evaluation and management of ${currentStudent.condition.toLowerCase()}.`;
+            
+            // Update referral letter with form values
+            updateReferralLetter();
+            
+            document.getElementById('referralModal').style.display = 'flex';
+        }
+
+        // Close referral modal
+        function closeReferralModal() {
+            document.getElementById('referralModal').style.display = 'none';
+            document.getElementById('referralForm').reset();
+            currentStudent = null;
+        }
+
+        // Update referral facility
+        function updateReferralFacility() {
+            const facility = document.getElementById('specialistFacility').value;
+            document.getElementById('referralFacility').textContent = facility;
+        }
+
+        // Update referral letter with form values
+        function updateReferralLetter() {
+            document.getElementById('referralComplaint').textContent = document.getElementById('presentingComplaint').value;
+            document.getElementById('referralHistory').textContent = document.getElementById('clinicalHistory').value;
+            document.getElementById('referralFindings').textContent = document.getElementById('clinicalFindings').value;
+            document.getElementById('referralReason').textContent = document.getElementById('referralPurpose').value;
+        }
+
+        // Complete referral
+        function completeReferral() {
+            if (!currentStudent) return;
+            
+            const presentingComplaint = document.getElementById('presentingComplaint').value;
+            const clinicalHistory = document.getElementById('clinicalHistory').value;
+            const clinicalFindings = document.getElementById('clinicalFindings').value;
+            const referralPurpose = document.getElementById('referralPurpose').value;
+            const specialistFacility = document.getElementById('specialistFacility').value;
+            
+            if (!presentingComplaint || !clinicalHistory || !clinicalFindings || !referralPurpose) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Mark student as referred
+            const studentIndex = students.findIndex(s => s.id === currentStudent.id);
+            if (studentIndex !== -1) {
+                students[studentIndex].referred = true;
+                students[studentIndex].status = 'referred';
+                students[studentIndex].referralDate = new Date().toLocaleDateString();
+                students[studentIndex].referredTo = specialistFacility;
+            }
+            
+            // Log referral details
+            console.log('Referral Completed:');
+            console.log('Student:', currentStudent.name);
+            console.log('Referred to:', specialistFacility);
+            console.log('Complaint:', presentingComplaint);
+            console.log('Date:', new Date().toLocaleDateString());
+            
+            alert(`Referral completed successfully!\n\n${currentStudent.name} has been referred to ${specialistFacility}.`);
+            
+            closeReferralModal();
+            populatePatientList();
+        }
+
+        // Add event listeners to update letter in real-time
+        document.getElementById('presentingComplaint').addEventListener('input', updateReferralLetter);
+        document.getElementById('clinicalHistory').addEventListener('input', updateReferralLetter);
+        document.getElementById('clinicalFindings').addEventListener('input', updateReferralLetter);
+        document.getElementById('referralPurpose').addEventListener('input', updateReferralLetter);
+    </script>
+</body>
+</html>

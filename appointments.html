@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/appointments.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-calendar-check"></i>
+                    <h2>Appointments</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="../index.html"><i class="fas fa-home"></i> Main Menu</a></li>
+                <li class="active"><a href="appointments.html"><i class="fas fa-calendar"></i> Schedule</a></li>
+                <li><a href="book-appointment.html"><i class="fas fa-plus-circle"></i> Book New</a></li>
+                <li><a href="appointment-history.html"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="availability.html"><i class="fas fa-user-md"></i> Doctor Availability</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Appointment Management</h1>
+                    <p>Schedule and manage patient appointments</p>
+                </div>
+                <div class="header-right">
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="bookNewAppointment()">
+                            <i class="fas fa-plus"></i> Book Appointment
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>18</h3>
+                        <p>Today's Appointments</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 12%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>In Progress</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-info"></i> On track
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>8</h3>
+                        <p>Waiting Patients</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 25%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>15</h3>
+                        <p>Avg Wait Time (min)</p>
+                    </div>
+                    <div class="stat-trend down">
+                        <i class="fas fa-arrow-down"></i> 8%
+                    </div>
+                </div>
+            </div>
+
+            <div class="appointments-container">
+                <!-- Calendar View -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Today's Schedule - November 14, 2024</h2>
+                        <div class="view-options">
+                            <button class="btn btn-outline active" onclick="switchView('day')">
+                                Day
+                            </button>
+                            <button class="btn btn-outline" onclick="switchView('week')">
+                                Week
+                            </button>
+                            <button class="btn btn-outline" onclick="switchView('month')">
+                                Month
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="schedule-timeline">
+                        <div class="time-slots">
+                            <div class="time-slot">08:00 AM</div>
+                            <div class="time-slot">09:00 AM</div>
+                            <div class="time-slot">10:00 AM</div>
+                            <div class="time-slot">11:00 AM</div>
+                            <div class="time-slot">12:00 PM</div>
+                            <div class="time-slot">01:00 PM</div>
+                            <div class="time-slot">02:00 PM</div>
+                            <div class="time-slot">03:00 PM</div>
+                            <div class="time-slot">04:00 PM</div>
+                        </div>
+                        
+                        <div class="appointment-slots">
+                            <div class="appointment-block" style="grid-row: 2 / span 2;" data-appointment="1">
+                                <div class="appointment-details">
+                                    <h4>John Doe</h4>
+                                    <p>Follow-up Consultation</p>
+                                    <span class="doctor">Dr. Mkhize</span>
+                                    <span class="room">Room 201</span>
+                                </div>
+                                <div class="appointment-status confirmed">
+                                    Confirmed
+                                </div>
+                            </div>
+                            
+                            <div class="appointment-block urgent" style="grid-row: 4 / span 1;" data-appointment="2">
+                                <div class="appointment-details">
+                                    <h4>Sarah Smith</h4>
+                                    <p>New Patient</p>
+                                    <span class="doctor">Dr. Johnson</span>
+                                    <span class="room">Room 203</span>
+                                </div>
+                                <div class="appointment-status urgent">
+                                    Urgent
+                                </div>
+                            </div>
+                            
+                            <div class="appointment-block" style="grid-row: 5 / span 2;" data-appointment="3">
+                                <div class="appointment-details">
+                                    <h4>Mike Wilson</h4>
+                                    <p>Lab Results Review</p>
+                                    <span class="doctor">Nurse Sarah</span>
+                                    <span class="room">Room 205</span>
+                                </div>
+                                <div class="appointment-status in-progress">
+                                    In Progress
+                                </div>
+                            </div>
+                            
+                            <div class="appointment-block" style="grid-row: 7 / span 2;" data-appointment="4">
+                                <div class="appointment-details">
+                                    <h4>Lisa Brown</h4>
+                                    <p>Vaccination</p>
+                                    <span class="doctor">Dr. Mkhize</span>
+                                    <span class="room">Room 201</span>
+                                </div>
+                                <div class="appointment-status confirmed">
+                                    Confirmed
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Appointments List -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Upcoming Appointments</h2>
+                        <a href="appointment-history.html" class="view-all">View All</a>
+                    </div>
+                    <div class="appointments-list">
+                        <div class="appointment-card" data-appointment="1">
+                            <div class="appointment-time">
+                                <span class="time">08:30 AM</span>
+                                <span class="duration">30 min</span>
+                            </div>
+                            <div class="appointment-info">
+                                <h4>John Doe - Follow-up</h4>
+                                <p><i class="fas fa-user-md"></i> Dr. Banele Mkhize</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Room 201</p>
+                                <div class="appointment-notes">
+                                    Hypertension management follow-up
+                                </div>
+                            </div>
+                            <div class="appointment-actions">
+                                <span class="status-badge confirmed">Confirmed</span>
+                                <button class="btn btn-small" onclick="startAppointment(1)">
+                                    Start
+                                </button>
+                                <button class="btn btn-outline" onclick="rescheduleAppointment(1)">
+                                    Reschedule
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="appointment-card urgent" data-appointment="2">
+                            <div class="appointment-time">
+                                <span class="time">10:00 AM</span>
+                                <span class="duration">45 min</span>
+                            </div>
+                            <div class="appointment-info">
+                                <h4>Sarah Smith - New Patient</h4>
+                                <p><i class="fas fa-user-md"></i> Dr. Johnson</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Room 203</p>
+                                <div class="appointment-notes">
+                                    Initial consultation - respiratory issues
+                                </div>
+                            </div>
+                            <div class="appointment-actions">
+                                <span class="status-badge urgent">Urgent</span>
+                                <button class="btn btn-small" onclick="startAppointment(2)">
+                                    Start
+                                </button>
+                                <button class="btn btn-outline" onclick="rescheduleAppointment(2)">
+                                    Reschedule
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="appointment-card in-progress" data-appointment="3">
+                            <div class="appointment-time">
+                                <span class="time">11:15 AM</span>
+                                <span class="duration">30 min</span>
+                            </div>
+                            <div class="appointment-info">
+                                <h4>Mike Wilson - Lab Review</h4>
+                                <p><i class="fas fa-user-nurse"></i> Nurse Sarah</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Room 205</p>
+                                <div class="appointment-notes">
+                                    Blood test results discussion
+                                </div>
+                            </div>
+                            <div class="appointment-actions">
+                                <span class="status-badge in-progress">In Progress</span>
+                                <button class="btn btn-small" onclick="completeAppointment(3)">
+                                    Complete
+                                </button>
+                                <button class="btn btn-outline" onclick="addNotes(3)">
+                                    Notes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Quick Actions</h2>
+                    </div>
+                    <div class="quick-actions-grid">
+                        <div class="action-card" onclick="bookNewAppointment()">
+                            <div class="action-icon">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                            <h4>Book Appointment</h4>
+                            <p>Schedule new patient appointment</p>
+                        </div>
+                        
+                        <div class="action-card" onclick="checkAvailability()">
+                            <div class="action-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h4>Check Availability</h4>
+                            <p>View doctor schedules and openings</p>
+                        </div>
+                        
+                        <div class="action-card" onclick="sendReminders()">
+                            <div class="action-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <h4>Send Reminders</h4>
+                            <p>Notify patients about appointments</p>
+                        </div>
+                        
+                        <div class="action-card" onclick="generateSchedule()">
+                            <div class="action-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h4>Generate Schedule</h4>
+                            <p>Create daily/weekly schedule reports</p>
+        </div>
+        <div class="action-card" onclick="window.location.href='followup-appointment.html'">
+    <div class="action-icon">
+        📅
+    </div>
+    <h4>Schedule Follow-up Consultation</h4>
+    <p>Schedule follow-up appointments for chronic conditions</p>
+</div>    
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../scripts/appointments.js"></script>
+</body>
+</html>

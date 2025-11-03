@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Diagnostic Test - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --gray-light: #bdc3c7;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--secondary);
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--secondary), var(--accent));
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hospital-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hospital-logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .hospital-logo h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 24px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray-dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 20px;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray-dark);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            margin: 0 30px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--gray-light);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            background-color: #f8f9fa;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            color: var(--secondary);
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Patients List */
+        .patients-list {
+            padding: 20px;
+            display: grid;
+            gap: 15px;
+        }
+
+        .patient-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .patient-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .patient-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .patient-details h4 {
+            margin: 0 0 5px 0;
+            color: var(--secondary);
+        }
+
+        .patient-details p {
+            margin: 0;
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .patient-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .test-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary);
+        }
+
+        .status-requested {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        /* Request Modal - Medium Size */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: var(--white);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: var(--secondary);
+            font-size: 18px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--gray-dark);
+        }
+
+        .modal-body {
+            padding: 15px 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 13px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* QR Code Section */
+        .qr-code-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px dashed var(--gray-light);
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 10px;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+        }
+
+        .qr-code-placeholder {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        /* Requested Tests Section */
+        .requested-tests {
+            padding: 20px;
+        }
+
+        .tests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .test-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--success);
+        }
+
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .test-header h4 {
+            color: var(--secondary);
+            margin: 0;
+        }
+
+        .test-details p {
+            margin: 5px 0;
+            color: var(--gray-dark);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Doctor Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-user-md"></i>
+                    <h2>Doctor Portal</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="doctor-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="doctor-consultations.html"><i class="fas fa-stethoscope"></i> Consultations</a></li>
+                <li><a href="doctor-patients.html"><i class="fas fa-users"></i> My Patients</a></li>
+                <li class="active"><a href="doctor-diagnostics.html"><i class="fas fa-microscope"></i> Diagnostics</a></li>
+                <li><a href="doctor-upload-images.html"><i class="fas fa-file-image"></i> Upload Images</a></li>
+                <li><a href="doctor-prescriptions.html"><i class="fas fa-prescription"></i> Prescriptions</a></li>
+                <li><a href="doctor-referrals.html"><i class="fas fa-file-medical"></i> Referrals</a></li>
+                <li><a href="doctor-messaging.html"><i class="fas fa-comments"></i> Messaging</a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Switch User</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Dr+Smith&background=667eea&color=fff" alt="Doctor">
+                    <div class="user-info">
+                        <span class="user-name">Dr. Banele Mkhize</span>
+                        <span class="user-role">Senior Physician</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Request Diagnostic Test</h1>
+                    <p>Order diagnostic tests for patients with completed consultations</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">5</span>
+                    </div>
+                    <a href="doctor-dashboard.html" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </header>
+
+            <!-- Patients with Completed Consultations -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Patients with Completed Consultations</h2>
+                    <span class="view-all">4 Patients</span>
+                </div>
+                
+                <div class="patients-list">
+                    <div class="patient-item" id="patient-1">
+                        <div class="patient-info">
+                            <img src="https://ui-avatars.com/api/?name=John+Doe&background=4facfe&color=fff" alt="John Doe" class="patient-avatar">
+                            <div class="patient-details">
+                                <h4>John Doe</h4>
+                                <p>Student ID: 22123456 • Consultation: Oct 28, 2025</p>
+                            </div>
+                        </div>
+                        <div class="patient-actions">
+                            <span class="test-status status-available" id="status-1">Test Available</span>
+                            <button class="btn btn-primary btn-small" onclick="openRequestModal(1, 'John Doe')">
+                                <i class="fas fa-microscope"></i> Request Test
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="patient-item" id="patient-2">
+                        <div class="patient-info">
+                            <img src="https://ui-avatars.com/api/?name=Hlohonolofatso+Dithebe&background=667eea&color=fff" alt="Hlohonolofatso Dithebe" class="patient-avatar">
+                            <div class="patient-details">
+                                <h4>Hlohonolofatso Dithebe</h4>
+                                <p>Student ID: 22124567 • Consultation: Oct 27, 2025</p>
+                            </div>
+                        </div>
+                        <div class="patient-actions">
+                            <span class="test-status status-available" id="status-2">Test Available</span>
+                            <button class="btn btn-primary btn-small" onclick="openRequestModal(2, 'Hlohonolofatso Dithebe')">
+                                <i class="fas fa-microscope"></i> Request Test
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="patient-item" id="patient-3">
+                        <div class="patient-info">
+                            <img src="https://ui-avatars.com/api/?name=Moratwa+Bekwa&background=f093fb&color=fff" alt="Moratwa Bekwa" class="patient-avatar">
+                            <div class="patient-details">
+                                <h4>Moratwa Bekwa</h4>
+                                <p>Student ID: 22125678 • Consultation: Oct 26, 2025</p>
+                            </div>
+                        </div>
+                        <div class="patient-actions">
+                            <span class="test-status status-available" id="status-3">Test Available</span>
+                            <button class="btn btn-primary btn-small" onclick="openRequestModal(3, 'Moratwa Bekwa')">
+                                <i class="fas fa-microscope"></i> Request Test
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="patient-item" id="patient-4">
+                        <div class="patient-info">
+                            <img src="https://ui-avatars.com/api/?name=Thembinkosi+Mbatha&background=4ecdc4&color=fff" alt="Thembinkosi Mbatha" class="patient-avatar">
+                            <div class="patient-details">
+                                <h4>Thembinkosi Mbatha</h4>
+                                <p>Student ID: 22126789 • Consultation: Oct 25, 2025</p>
+                            </div>
+                        </div>
+                        <div class="patient-actions">
+                            <span class="test-status status-available" id="status-4">Test Available</span>
+                            <button class="btn btn-primary btn-small" onclick="openRequestModal(4, 'Thembinkosi Mbatha')">
+                                <i class="fas fa-microscope"></i> Request Test
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requested Tests Preview -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Recently Requested Tests</h2>
+                </div>
+                <div class="requested-tests">
+                    <div class="tests-grid" id="requestedTestsGrid">
+                        <!-- Tests will be dynamically added here -->
+                        <div class="no-tests" id="noTestsMessage">
+                            <p style="text-align: center; color: var(--gray-dark); padding: 20px;">
+                                No diagnostic tests requested yet. Request tests using the buttons above.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Request Test Modal -->
+    <div class="modal-overlay" id="requestModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Request Diagnostic Test</h3>
+                <button class="close-modal" onclick="closeRequestModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="patientName">Patient Name</label>
+                    <input type="text" id="patientName" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="hospital">Hospital/Facility</label>
+                    <select id="hospital" class="form-control">
+                        <option value="">Select hospital/facility</option>
+                        <option value="steve-biko">Steve Biko Campus Clinic</option>
+                        <option value="ritson">Ritson Campus Medical Center</option>
+                        <option value="ml-sultan">ML Sultan Campus Laboratory</option>
+                        <option value="city-hospital">Durban City Hospital</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" class="form-control" onchange="updateTestTypes()">
+                        <option value="">Select category</option>
+                        <option value="laboratory">Laboratory</option>
+                        <option value="radiology">Radiology</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="testType">Test Type</label>
+                    <select id="testType" class="form-control">
+                        <option value="">Select test type</option>
+                        <!-- Test types will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reason">Reason for Test</label>
+                    <textarea id="reason" class="form-control" rows="3" placeholder="Provide clinical reason for this test"></textarea>
+                </div>
+                
+                <!-- QR Code Section -->
+                <div class="qr-code-container">
+                    <h4>Test Reference QR Code</h4>
+                    <div class="qr-code">
+                        <div class="qr-code-placeholder" id="qrCodePlaceholder">
+                            QR Code will appear after request
+                        </div>
+                        <canvas id="qrCodeCanvas" style="display: none;"></canvas>
+                    </div>
+                    <p>Scan this code at the testing facility</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeRequestModal()">Cancel</button>
+                <button class="btn btn-primary" id="requestButton" onclick="requestTest()">Request Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPatientId = null;
+        let currentPatientName = null;
+        let requestedTests = [];
+
+        // Test types by category
+        const testTypes = {
+            laboratory: [
+                "Complete Blood Count (CBC)",
+                "Basic Metabolic Panel",
+                "Lipid Panel",
+                "Liver Function Tests",
+                "Thyroid Function Tests",
+                "Urinalysis",
+                "Hemoglobin A1c",
+                "Coagulation Panel",
+                "Electrolyte Panel",
+                "Vitamin D Level"
+            ],
+            radiology: [
+                "Chest X-Ray",
+                "Abdominal X-Ray",
+                "CT Scan - Head",
+                "CT Scan - Chest",
+                "CT Scan - Abdomen",
+                "MRI - Brain",
+                "MRI - Spine",
+                "Ultrasound - Abdominal",
+                "Ultrasound - Pelvic",
+                "Mammography"
+            ]
+        };
+
+        function openRequestModal(patientId, patientName) {
+            currentPatientId = patientId;
+            currentPatientName = patientName;
+            
+            // Set modal title and patient name
+            document.getElementById('modalTitle').textContent = `Request Diagnostic Test for ${patientName}`;
+            document.getElementById('patientName').value = patientName;
+            
+            // Reset form
+            document.getElementById('hospital').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('testType').innerHTML = '<option value="">Select test type</option>';
+            document.getElementById('reason').value = '';
+            document.getElementById('qrCodePlaceholder').style.display = 'block';
+            document.getElementById('qrCodeCanvas').style.display = 'none';
+            
+            // Show modal
+            document.getElementById('requestModal').classList.add('active');
+        }
+
+        function closeRequestModal() {
+            document.getElementById('requestModal').classList.remove('active');
+            currentPatientId = null;
+            currentPatientName = null;
+        }
+
+        function updateTestTypes() {
+            const category = document.getElementById('category').value;
+            const testTypeSelect = document.getElementById('testType');
+            
+            // Clear existing options
+            testTypeSelect.innerHTML = '<option value="">Select test type</option>';
+            
+            // Add new options based on category
+            if (category && testTypes[category]) {
+                testTypes[category].forEach(test => {
+                    const option = document.createElement('option');
+                    option.value = test.toLowerCase().replace(/\s+/g, '-');
+                    option.textContent = test;
+                    testTypeSelect.appendChild(option);
+                });
+            }
+        }
+
+        function generateQRCode(text) {
+            const canvas = document.getElementById('qrCodeCanvas');
+            const placeholder = document.getElementById('qrCodePlaceholder');
+            
+            // Simple QR code simulation (in a real app, use a QR code library)
+            const ctx = canvas.getContext('2d');
+            canvas.width = 150;
+            canvas.height = 150;
+            
+            // Clear canvas
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw a simple pattern to simulate QR code
+            ctx.fillStyle = 'black';
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    if (Math.random() > 0.5) {
+                        ctx.fillRect(i * 15, j * 15, 10, 10);
+                    }
+                }
+            }
+            
+            // Show canvas and hide placeholder
+            placeholder.style.display = 'none';
+            canvas.style.display = 'block';
+        }
+
+        function requestTest() {
+            const hospital = document.getElementById('hospital').value;
+            const category = document.getElementById('category').value;
+            const testType = document.getElementById('testType').value;
+            const reason = document.getElementById('reason').value;
+            
+            if (!hospital || !category || !testType || !reason) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Generate test reference
+            const testRef = 'TEST-' + Date.now();
+            
+            // Generate QR code
+            generateQRCode(testRef);
+            
+            // Add to requested tests array
+            requestedTests.push({
+                id: 'test-' + Date.now(),
+                patientId: currentPatientId,
+                patientName: currentPatientName,
+                hospital: hospital,
+                category: category,
+                testType: testType,
+                reason: reason,
+                reference: testRef,
+                date: new Date().toLocaleDateString(),
+                status: 'Requested'
+            });
+            
+            // Update the patient status
+            const statusElement = document.getElementById(`status-${currentPatientId}`);
+            statusElement.textContent = 'Requested';
+            statusElement.className = 'test-status status-requested';
+            
+            // Update the requested tests grid
+            updateRequestedTestsGrid();
+            
+            // Show success message
+            alert(`Diagnostic test successfully requested for ${currentPatientName}. Reference: ${testRef}`);
+            
+            // Don't close modal to show QR code
+            // closeRequestModal();
+        }
+
+        function updateRequestedTestsGrid() {
+            const grid = document.getElementById('requestedTestsGrid');
+            const noTestsMessage = document.getElementById('noTestsMessage');
+            
+            if (requestedTests.length === 0) {
+                noTestsMessage.style.display = 'block';
+                return;
+            }
+            
+            noTestsMessage.style.display = 'none';
+            
+            // Clear the grid
+            grid.innerHTML = '';
+            
+            // Add the most recent 4 tests
+            const recentTests = requestedTests.slice(-4).reverse();
+            
+            recentTests.forEach(test => {
+                const testItem = document.createElement('div');
+                testItem.className = 'test-item';
+                testItem.innerHTML = `
+                    <div class="test-header">
+                        <h4>${test.patientName}</h4>
+                        <span class="test-status status-requested">${test.status}</span>
+                    </div>
+                    <div class="test-details">
+                        <p><strong>Test:</strong> ${document.getElementById('testType').selectedOptions[0].text}</p>
+                        <p><strong>Category:</strong> ${test.category.charAt(0).toUpperCase() + test.category.slice(1)}</p>
+                        <p><strong>Facility:</strong> ${document.getElementById('hospital').selectedOptions[0].text}</p>
+                        <p><strong>Reference:</strong> ${test.reference}</p>
+                        <p><strong>Date:</strong> ${test.date}</p>
+                    </div>
+                `;
+                grid.appendChild(testItem);
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateRequestedTestsGrid();
+        });
+
+        // Update the function in doctor-dashboard.js
+        function requestDiagnosticTest() {
+            window.location.href = 'doctor-diagnostics.html';
+        }
+    </script>
+</body>
+</html>

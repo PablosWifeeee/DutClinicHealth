@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed Deliveries - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --gray-light: #bdc3c7;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--secondary);
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--secondary), var(--accent));
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hospital-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hospital-logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .hospital-logo h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 24px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray-dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 20px;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray-dark);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            margin: 0 30px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--gray-light);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            background-color: #f8f9fa;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            color: var(--secondary);
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Failed Deliveries Section */
+        .failed-deliveries-list {
+            padding: 20px;
+            display: grid;
+            gap: 15px;
+        }
+
+        .delivery-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--danger);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .delivery-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .delivery-time {
+            font-weight: 600;
+            color: var(--danger);
+            width: 100px;
+        }
+
+        .delivery-details h4 {
+            margin: 0 0 5px 0;
+            color: var(--secondary);
+        }
+
+        .delivery-details p {
+            margin: 0;
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .delivery-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-failed {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .status-completed {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .delivery-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Reschedule Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: var(--white);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: var(--secondary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray-dark);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* No deliveries message */
+        .no-deliveries {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .no-deliveries-content {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .no-deliveries i {
+            font-size: 64px;
+            color: var(--gray-light);
+            margin-bottom: 20px;
+        }
+
+        .no-deliveries h3 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .no-deliveries p {
+            color: var(--gray-dark);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-user-injured"></i>
+                    <h2>Patient Portal</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="patient-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="appointments.html"><i class="fas fa-calendar-plus"></i> Book Appointment</a></li>
+                <li><a href="patient-records.html"><i class="fas fa-file-medical"></i> My Records</a></li>
+                <li><a href="patient-prescriptions.html"><i class="fas fa-prescription"></i> Prescriptions</a></li>
+                <li><a href="messaging.html"><i class="fas fa-comments"></i> Messages</a></li>
+                <li><a href="patient-billing.html"><i class="fas fa-file-invoice"></i> Billing</a></li>
+                <li><a href="failed-deliveries.html" class="active"><i class="fas fa-truck"></i> Failed Deliveries</a></li>
+                <li><a href="emergency.html"><i class="fas fa-ambulance"></i> Emergency</a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Switch User</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=4facfe&color=fff" alt="Patient">
+                    <div class="user-info">
+                        <span class="user-name">John Doe</span>
+                        <span class="user-role">Student - 22123456</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Failed Deliveries</h1>
+                    <p>Manage your medication delivery rescheduling</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </div>
+                    <a href="book-appointment.html" class="btn btn-primary">
+                        <i class="fas fa-calendar-plus"></i> Book Appointment
+                    </a>
+                </div>
+            </header>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Failed Delivery Attempts</h2>
+                    <span class="view-all">2 Items</span>
+                </div>
+                
+                <div class="failed-deliveries-list">
+                    <div class="delivery-item" id="delivery-1">
+                        <div class="delivery-time">Oct 28, 2025<br>2:15 PM</div>
+                        <div class="delivery-details">
+                            <h4>Amoxicillin 500mg (30 tablets)</h4>
+                            <p>Reason: No one available to receive delivery</p>
+                        </div>
+                        <div class="delivery-status status-failed">Failed</div>
+                        <div class="delivery-actions" id="actions-1">
+                            <button class="btn btn-primary btn-small" onclick="openRescheduleModal(1)">
+                                Reschedule
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="delivery-item" id="delivery-2">
+                        <div class="delivery-time">Oct 25, 2025<br>10:30 AM</div>
+                        <div class="delivery-details">
+                            <h4>Vitamin D3 1000IU (60 capsules)</h4>
+                            <p>Reason: Incorrect address provided</p>
+                        </div>
+                        <div class="delivery-status status-failed">Failed</div>
+                        <div class="delivery-actions" id="actions-2">
+                            <button class="btn btn-primary btn-small" onclick="openRescheduleModal(2)">
+                                Reschedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div class="modal-overlay" id="rescheduleModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Reschedule Delivery</h3>
+                <button class="close-modal" onclick="closeRescheduleModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="deliveryDate">Preferred Date</label>
+                    <input type="date" id="deliveryDate" class="form-control" min="">
+                </div>
+                <div class="form-group">
+                    <label for="deliveryTime">Preferred Time</label>
+                    <select id="deliveryTime" class="form-control">
+                        <option value="">Select a time slot</option>
+                        <option value="09:00-11:00">9:00 AM - 11:00 AM</option>
+                        <option value="11:00-13:00">11:00 AM - 1:00 PM</option>
+                        <option value="13:00-15:00">1:00 PM - 3:00 PM</option>
+                        <option value="15:00-17:00">3:00 PM - 5:00 PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="deliveryAddress">Delivery Address</label>
+                    <textarea id="deliveryAddress" class="form-control" rows="3" placeholder="Enter your complete delivery address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="specialInstructions">Special Instructions</label>
+                    <textarea id="specialInstructions" class="form-control" rows="3" placeholder="Any special delivery instructions?"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeRescheduleModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitReschedule()">Reschedule Delivery</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set minimum date to today for the date picker
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('deliveryDate').min = today;
+        });
+
+        let currentDeliveryId = null;
+
+        function openRescheduleModal(deliveryId) {
+            currentDeliveryId = deliveryId;
+            document.getElementById('rescheduleModal').classList.add('active');
+            
+            // Reset form
+            document.getElementById('deliveryDate').value = '';
+            document.getElementById('deliveryTime').value = '';
+            document.getElementById('deliveryAddress').value = '';
+            document.getElementById('specialInstructions').value = '';
+        }
+
+        function closeRescheduleModal() {
+            document.getElementById('rescheduleModal').classList.remove('active');
+            currentDeliveryId = null;
+        }
+
+        function submitReschedule() {
+            const date = document.getElementById('deliveryDate').value;
+            const time = document.getElementById('deliveryTime').value;
+            const address = document.getElementById('deliveryAddress').value;
+            
+            if (!date || !time || !address) {
+                alert('Please fill in all required fields: date, time, and address.');
+                return;
+            }
+            
+            // In a real application, this would make an API call to reschedule the delivery
+            alert(`Delivery #${currentDeliveryId} has been rescheduled for ${date} between ${time}.`);
+            
+            // Update the delivery item to show "Completed Request"
+            updateDeliveryStatus(currentDeliveryId);
+            
+            // Close modal after a short delay to allow user to see the alert
+            setTimeout(() => {
+                closeRescheduleModal();
+                
+                // Show success message
+                setTimeout(() => {
+                    alert('Your delivery has been successfully rescheduled. You will receive a confirmation email shortly.');
+                }, 300);
+            }, 500);
+        }
+
+        function updateDeliveryStatus(deliveryId) {
+            const deliveryItem = document.getElementById(`delivery-${deliveryId}`);
+            const actionsContainer = document.getElementById(`actions-${deliveryId}`);
+            
+            if (deliveryItem && actionsContainer) {
+                // Change the border color to success (green)
+                deliveryItem.style.borderLeftColor = 'var(--success)';
+                
+                // Update the status
+                const statusElement = deliveryItem.querySelector('.delivery-status');
+                statusElement.textContent = 'Rescheduled';
+                statusElement.className = 'delivery-status status-completed';
+                
+                // Replace the button with "Completed Request"
+                actionsContainer.innerHTML = `
+                    <button class="btn btn-success btn-small" disabled>
+                        <i class="fas fa-check-circle"></i> Completed Request
+                    </button>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

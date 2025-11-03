@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/appointment-booking.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-calendar-plus"></i>
+                    <h2>Book Appointment</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="../index.html"><i class="fas fa-home"></i> Main Menu</a></li>
+                <li><a href="patient-dashboard.html"><i class="fas fa-home"></i> Patient Dashboard</a></li>
+                <li class="active"><a href="book-appointment.html"><i class="fas fa-calendar-plus"></i> Book Appointment</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Book Medical Appointment</h1>
+                    <p>Schedule your consultation with our healthcare providers</p>
+                </div>
+            </header>
+
+            <div class="booking-container">
+                <!-- Appointment Form -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Book New Appointment</h2>
+                        <p>Schedule your consultation - choose between virtual or physical visit</p>
+                    </div>
+                    
+                    <form class="appointment-form" id="appointmentForm">
+                        <!-- Appointment Type Selection -->
+                        <div class="appointment-type-selection">
+                            <h3>Appointment Type</h3>
+                            <div class="type-options">
+                                <div class="type-option" onclick="selectAppointmentType('virtual')">
+                                    <div class="type-icon">
+                                        <i class="fas fa-video"></i>
+                                    </div>
+                                    <div class="type-info">
+                                        <h4>Virtual Consultation</h4>
+                                        <p>Video call with healthcare provider</p>
+                                        <ul>
+                                            <li><i class="fas fa-check"></i> No travel required</li>
+                                            <li><i class="fas fa-check"></i> Flexible timing</li>
+                                            <li><i class="fas fa-check"></i> Secure and private</li>
+                                        </ul>
+                                    </div>
+                                    <div class="type-selector">
+                                        <div class="radio-dot"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="type-option" onclick="selectAppointmentType('physical')">
+                                    <div class="type-icon">
+                                        <i class="fas fa-clinic-medical"></i>
+                                    </div>
+                                    <div class="type-info">
+                                        <h4>Physical Visit</h4>
+                                        <p>In-person consultation at clinic</p>
+                                        <ul>
+                                            <li><i class="fas fa-check"></i> Physical examination</li>
+                                            <li><i class="fas fa-check"></i> Immediate tests if needed</li>
+                                            <li><i class="fas fa-check"></i> Personal interaction</li>
+                                        </ul>
+                                    </div>
+                                    <div class="type-selector">
+                                        <div class="radio-dot"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="appointmentType" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="consultationType">Consultation Purpose *</label>
+                                <select id="consultationType" required>
+                                    <option value="">Select purpose</option>
+                                    <option value="general">General Check-up</option>
+                                    <option value="followup">Follow-up Visit</option>
+                                    <option value="vaccination">Vaccination</option>
+                                    <option value="test-results">Test Results Review</option>
+                                    <option value="prescription">Prescription Refill</option>
+                                    <option value="mental-health">Mental Health Consultation</option>
+                                    <option value="sports-physio">Sports Physiology</option>
+                                    <option value="nutrition">Nutrition Counseling</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="healthcareProvider">Preferred Provider</label>
+                                <select id="healthcareProvider">
+                                    <option value="any">Any Available Doctor</option>
+                                    <option value="dr-mkhize">Dr. Banele Mkhize</option>
+                                    <option value="dr-johnson">Dr. Johnson</option>
+                                    <option value="nurse-sarah">Nurse Sarah</option>
+                                    <option value="nurse-temba">Nurse Temba</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="preferredDate">Preferred Date *</label>
+                                <input type="date" id="preferredDate" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="preferredTime">Preferred Time *</label>
+                                <select id="preferredTime" required>
+                                    <option value="">Select time</option>
+                                    <option value="08:00">08:00 AM</option>
+                                    <option value="09:00">09:00 AM</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="11:00">11:00 AM</option>
+                                    <option value="12:00">12:00 PM</option>
+                                    <option value="13:00">01:00 PM</option>
+                                    <option value="14:00">02:00 PM</option>
+                                    <option value="15:00">03:00 PM</option>
+                                    <option value="16:00">04:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Virtual Consultation Specific Fields -->
+                        <div class="virtual-fields" id="virtualFields" style="display: none;">
+                            <div class="form-group">
+                                <label for="videoPlatform">Preferred Video Platform</label>
+                                <select id="videoPlatform">
+                                    <option value="teams">Microsoft Teams</option>
+                                    <option value="zoom">Zoom</option>
+                                    <option value="google-meet">Google Meet</option>
+                                    <option value="whatsapp">WhatsApp Video</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactNumber">Contact Number for Call</label>
+                                <input type="tel" id="contactNumber" placeholder="+27 XXX XXX XXXX">
+                            </div>
+                        </div>
+
+                        <!-- Physical Visit Specific Fields -->
+                        <div class="physical-fields" id="physicalFields" style="display: none;">
+                            <div class="form-group">
+                                <label for="preferredCampus">Preferred Campus Clinic</label>
+                                <select id="preferredCampus">
+                                    <option value="steve-biko">Steve Biko Campus Clinic</option>
+                                    <option value="ritson">Ritson Campus Clinic</option>
+                                    <option value="ml-sultan">ML Sultan Campus Clinic</option>
+                                    <option value="brickfield">Brickfield Campus Clinic</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="symptoms">Symptoms or Reason for Visit *</label>
+                            <textarea id="symptoms" rows="3" placeholder="Please describe your symptoms or reason for this appointment..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="urgency">Urgency Level</label>
+                            <select id="urgency">
+                                <option value="routine">Routine (Next available)</option>
+                                <option value="soon">Soon (Within 3 days)</option>
+                                <option value="urgent">Urgent (Within 24 hours)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" onclick="goBack()">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calendar-check"></i>
+                                Book Appointment
+                            </button>
+                        </div>
+
+                        <!-- Debug Test Button -->
+                        <div style="text-align: center; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <p style="margin-bottom: 0.5rem; font-size: 0.9rem; color: #666;">Debug Test:</p>
+                            <button type="button" class="btn btn-warning" onclick="testBooking()" style="font-size: 0.8rem;">
+                                <i class="fas fa-bug"></i> Test Booking Function
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Available Time Slots -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Available Time Slots</h2>
+                        <button class="btn btn-outline" onclick="checkAvailability()">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                    
+                    <div class="time-slots-grid" id="timeSlots">
+                        <!-- Time slots will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="scripts/appointment-booking.js"></script>
+</body>
+</html>

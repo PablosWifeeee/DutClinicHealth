@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Tracking - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/emergency-tracking.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-ambulance"></i>
+                    <h2>Emergency Tracking</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="../index.html"><i class="fas fa-home"></i> Main Menu</a></li>
+                <li><a href="emergency.html"><i class="fas fa-plus-circle"></i> Emergency Request</a></li>
+                <li class="active"><a href="emergency-tracking.html"><i class="fas fa-list"></i> Active Emergencies</a></li>
+                <li><a href="ambulance-management.html"><i class="fas fa-ambulance"></i> Ambulance Status</a></li>
+                <li><a href="emergency-records.html"><i class="fas fa-file-medical"></i> Records</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Emergency Response Tracking</h1>
+                    <p>Real-time monitoring of active emergency requests</p>
+                </div>
+                <div class="header-right">
+                    <div class="live-indicator">
+                        <i class="fas fa-circle"></i>
+                        <span>LIVE</span>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="refreshEmergencies()">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="activeEmergencies">3</h3>
+                        <p>Active Emergencies</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 1 new
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="respondedEmergencies">2</h3>
+                        <p>Being Responded To</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 50%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="staffResponding">5</h3>
+                        <p>Staff Responding</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-info"></i> Available
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="avgResponseTime">4.2</h3>
+                        <p>Avg Response (min)</p>
+                    </div>
+                    <div class="stat-trend down">
+                        <i class="fas fa-arrow-down"></i> 12%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Requests List -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Active Emergency Requests</h2>
+                    <div class="filter-options">
+                        <select id="statusFilter" onchange="filterEmergencies()">
+                            <option value="all">All Status</option>
+                            <option value="requested">Just Requested</option>
+                            <option value="dispatched">Ambulance Dispatched</option>
+                            <option value="on-scene">On Scene</option>
+                            <option value="transporting">Transporting</option>
+                        </select>
+                        <select id="campusFilter" onchange="filterEmergencies()">
+                            <option value="all">All Campuses</option>
+                            <option value="steve-biko">Steve Biko</option>
+                            <option value="ritson">Ritson</option>
+                            <option value="ml-sultan">ML Sultan</option>
+                            <option value="brickfield">Brickfield</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="emergency-requests" id="emergencyRequests">
+                    <!-- Emergency requests will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <!-- Response Team Status -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Response Team Status</h2>
+                </div>
+                <div class="response-team">
+                    <div class="team-member">
+                        <div class="member-avatar">
+                            <img src="https://ui-avatars.com/api/?name=Dr+Mkhize&background=667eea&color=fff" alt="Dr. Mkhize">
+                        </div>
+                        <div class="member-info">
+                            <h4>Dr. Banele Mkhize</h4>
+                            <p>Emergency Physician</p>
+                            <span class="status available">Available</span>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-avatar">
+                            <img src="https://ui-avatars.com/api/?name=Paramedic+Alex&background=fa709a&color=fff" alt="Paramedic">
+                        </div>
+                        <div class="member-info">
+                            <h4>Alex Johnson</h4>
+                            <p>Senior Paramedic</p>
+                            <span class="status responding">Responding</span>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-avatar">
+                            <img src="https://ui-avatars.com/api/?name=Nurse+Sarah&background=f093fb&color=fff" alt="Nurse">
+                        </div>
+                        <div class="member-info">
+                            <h4>Nurse Sarah</h4>
+                            <p>Emergency Nurse</p>
+                            <span class="status available">Available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../scripts/emergency-tracking.js"></script>
+</body>
+</html>

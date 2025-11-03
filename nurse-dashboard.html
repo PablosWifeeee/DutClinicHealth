@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse Dashboard - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/nurse.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-user-nurse"></i>
+                    <h2>Nurse Portal</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="active"><a href="nurse-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                <li><a href="triage.html"><i class="fas fa-heartbeat"></i> Patient Triage</a></li>
+                <li><a href="vitals.html"><i class="fas fa-thermometer-half"></i> Vital Signs</a></li>
+                <li><a href="medication.html"><i class="fas fa-syringe"></i> Medication</a></li>
+                <li><a href="messaging.html"><i class="fas fa-comments"></i> Messaging</a></li>
+                <li><a href="emergency.html"><i class="fas fa-ambulance"></i> Emergency</a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Switch User</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Nurse+Sarah&background=f093fb&color=fff" alt="Nurse">
+                    <div class="user-info">
+                        <span class="user-name">Nurse Sarah</span>
+                        <span class="user-role">Registered Nurse</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Nurse Dashboard</h1>
+                    <p>Welcome back, Nurse Sarah. 12 patients in waiting area.</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">7</span>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="startTriage()">
+                            <i class="fas fa-plus"></i> New Triage
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>12</h3>
+                        <p>Waiting Patients</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 20%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>25</h3>
+                        <p>Avg Wait Time (min)</p>
+                    </div>
+                    <div class="stat-trend down">
+                        <i class="fas fa-arrow-down"></i> 5%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-temperature-high"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>8</h3>
+                        <p>Vitals Taken</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 15%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>2</h3>
+                        <p>Urgent Cases</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 100%
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Waiting Patients</h2>
+                    <a href="triage.html" class="view-all">View All</a>
+                </div>
+                <div class="patient-list">
+                    <div class="patient-item urgent">
+                        <div class="patient-avatar">
+                            <img src="https://ui-avatars.com/api/?name=John+Doe&background=dc3545&color=fff" alt="Patient">
+                        </div>
+                        <div class="patient-details">
+                            <h4>John Doe</h4>
+                            <p>Chest Pain • Waiting 15min</p>
+                            <span class="priority urgent">URGENT</span>
+                        </div>
+                        <button class="btn btn-small" onclick="startPatientTriage('John Doe')">
+                            Start Triage
+                        </button>
+                    </div>
+                    
+                    <div class="patient-item">
+                        <div class="patient-avatar">
+                            <img src="https://ui-avatars.com/api/?name=Sarah+Smith&background=4facfe&color=fff" alt="Patient">
+                        </div>
+                        <div class="patient-details">
+                            <h4>Sarah Smith</h4>
+                            <p>Fever • Waiting 8min</p>
+                            <span class="priority medium">MEDIUM</span>
+                        </div>
+                        <button class="btn btn-small" onclick="startPatientTriage('Sarah Smith')">
+                            Start Triage
+                        </button>
+                    </div>
+                    
+                    <div class="patient-item">
+                        <div class="patient-avatar">
+                            <img src="https://ui-avatars.com/api/?name=Mike+Wilson&background=17a2b8&color=fff" alt="Patient">
+                        </div>
+                        <div class="patient-details">
+                            <h4>Mike Wilson</h4>
+                            <p>Prescription Refill • Waiting 5min</p>
+                            <span class="priority low">LOW</span>
+                        </div>
+                        <button class="btn btn-small" onclick="startPatientTriage('Mike Wilson')">
+                            Start Triage
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="quick-actions-grid">
+                    <div class="action-card" onclick="takeVitals()">
+                        <div class="action-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h4>Take Vitals</h4>
+                        <p>Record patient vital signs</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="administerMedication()">
+                        <div class="action-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <h4>Administer Meds</h4>
+                        <p>Medication administration</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="requestDiagnostic()">
+                        <div class="action-icon">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <h4>Request Tests</h4>
+                        <p>Order lab or imaging tests</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="sendMessage()">
+                        <div class="action-icon">
+                            <i class="fas fa-comment-medical"></i>
+                        </div>
+                        <h4>Message Doctor</h4>
+                        <p>Communicate with physicians</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../scripts/app.js"></script>
+    <script src="../scripts/nurse.js"></script>
+</body>
+</html>

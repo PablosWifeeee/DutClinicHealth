@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receptionist Dashboard - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/receptionist.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="header-left">
+                <i class="fas fa-headset"></i>
+                <h1>Receptionist Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <span id="currentUser">Receptionist</span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-menu">
+                    <div class="menu-item active" onclick="showSection('feedback')">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Survey Results</span>
+                    </div>
+                    <div class="menu-item" onclick="showSection('appointments')">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </div>
+                    <div class="menu-item" onclick="showSection('patients')">
+                        <i class="fas fa-users"></i>
+                        <span>Patient Management</span>
+                    </div>
+                    <div class="menu-item" onclick="showSection('reports')">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Reports</span>
+                    </div>
+                    <div class="menu-item" onclick="showSection('analytics')">
+    <i class="fas fa-chart-line"></i>
+    <span>Clinic Analytics</span>
+</div>
+                </div>
+            </div>
+
+            <!-- Main Panel -->
+            <div class="main-panel">
+                <!-- Feedback/Survey Results Section -->
+                <div id="feedback-section" class="content-section active">
+                    <div class="section-header">
+                        <h2><i class="fas fa-chart-bar"></i> Survey Results & Feedback Analysis</h2>
+                        <p>View and analyze patient feedback with filtering options</p>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filters-card">
+                        <h3>Filter Feedback</h3>
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label>Nurse Name:</label>
+                                <select id="nurseFilter">
+                                    <option value="">All Nurses</option>
+                                    <option value="Nurse Jackson">Nurse Jackson</option>
+                                    <option value="Nurse Mukwevho">Nurse Mukwevho</option>
+                                    <option value="Nurse Dhlomo">Nurse Dhlomo</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Date From:</label>
+                                <input type="date" id="dateFrom">
+                            </div>
+                            <div class="filter-group">
+                                <label>Date To:</label>
+                                <input type="date" id="dateTo">
+                            </div>
+                            <div class="filter-group">
+                                <label>Rating:</label>
+                                <select id="ratingFilter">
+                                    <option value="">All Ratings</option>
+                                    <option value="5">5 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="1">1 Star</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-actions">
+                            <button class="btn-primary" onclick="applyFilters()">
+                                <i class="fas fa-filter"></i> Apply Filters
+                            </button>
+                            <button class="btn-secondary" onclick="clearFilters()">
+                                <i class="fas fa-redo"></i> Clear Filters
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Results -->
+                    <div class="results-card">
+                        <div class="results-header">
+                            <h3>Feedback Results</h3>
+                            <div class="export-actions">
+                                <button class="btn-export" onclick="exportFeedbackPDF()">
+                                    <i class="fas fa-file-pdf"></i> Export Feedback PDF
+                                </button>
+                                <button class="btn-export" onclick="exportSummaryPDF()">
+                                    <i class="fas fa-chart-pie"></i> Export Summary PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div id="feedbackResults" class="feedback-results">
+                            <!-- Feedback items will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Survey Summary -->
+                    <div class="summary-card">
+                        <div class="summary-header">
+                            <h3>Survey Summary</h3>
+                            <button class="btn-primary" onclick="generateSummary()">
+                                <i class="fas fa-chart-line"></i> Generate Summary
+                            </button>
+                        </div>
+                        <div id="surveySummary" class="survey-summary">
+                            <!-- Summary charts and data will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointments Section -->
+                <div id="appointments-section" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-calendar-check"></i> Appointments Management</h2>
+                        <p>Manage patient appointments and schedules</p>
+                    </div>
+                    <div class="filters-card">
+                        <h3>Today's Appointments</h3>
+                        <div class="appointments-list">
+                            <div class="appointment-item">
+                                <div class="appointment-info">
+                                    <strong>John Smith</strong>
+                                    <span>10:00 AM - Doctor Consultation</span>
+                                </div>
+                                <span class="appointment-status confirmed">Confirmed</span>
+                            </div>
+                            <div class="appointment-item">
+                                <div class="appointment-info">
+                                    <strong>Sarah Johnson</strong>
+                                    <span>11:30 AM - Nurse Checkup</span>
+                                </div>
+                                <span class="appointment-status pending">Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Patients Section -->
+                <div id="patients-section" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-users"></i> Patient Management</h2>
+                        <p>Manage patient records and information</p>
+                    </div>
+                    <div class="filters-card">
+                        <h3>Patient Database</h3>
+                        <p>Search and manage patient records</p>
+                        <div class="search-box">
+                            <input type="text" placeholder="Search patients by name or ID...">
+                            <button class="btn-primary">Search</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reports Section -->
+                <div id="reports-section" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-file-pdf"></i> Reports & Analytics</h2>
+                        <p>Generate comprehensive clinic reports</p>
+                    </div>
+                    <div class="filters-card">
+                        <h3>Report Generation</h3>
+                        <div class="report-options">
+                            <button class="btn-primary">
+                                <i class="fas fa-file-medical"></i> Daily Report
+                            </button>
+                            <button class="btn-primary">
+                                <i class="fas fa-chart-line"></i> Weekly Analytics
+                            </button>
+                            <button class="btn-primary">
+                                <i class="fas fa-user-md"></i> Staff Performance
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Clinic Analytics Section -->
+<div id="analytics-section" class="content-section">
+    <div class="section-header">
+        <h2><i class="fas fa-chart-line"></i> Clinic Analytics & Statistics</h2>
+        <p>Comprehensive overview of patient demographics and health trends</p>
+    </div>
+
+    <!-- Analytics Filters -->
+    <div class="filters-card">
+        <h3>Analytics Period</h3>
+        <div class="filter-row">
+            <div class="filter-group">
+                <label>Time Period:</label>
+                <select id="analyticsPeriod">
+                    <option value="lastWeek">Last Week</option>
+                    <option value="lastMonth" selected>Last Month</option>
+                    <option value="lastQuarter">Last Quarter</option>
+                    <option value="lastYear">Last Year</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Date From:</label>
+                <input type="date" id="analyticsDateFrom" value="2024-10-01">
+            </div>
+            <div class="filter-group">
+                <label>Date To:</label>
+                <input type="date" id="analyticsDateTo" value="2024-10-31">
+            </div>
+        </div>
+        <div class="filter-actions">
+            <button class="btn-primary" onclick="loadAnalyticsData()">
+                <i class="fas fa-sync-alt"></i> Update Analytics
+            </button>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="summary-stats">
+        <div class="stat-card">
+            <div class="stat-value" id="totalPatients">0</div>
+            <div class="stat-label">Total Patients</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="malePatients">0</div>
+            <div class="stat-label">Male Patients</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="femalePatients">0</div>
+            <div class="stat-label">Female Patients</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="studentVisits">0</div>
+            <div class="stat-label">Student Visits</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="staffVisits">0</div>
+            <div class="stat-label">Staff Visits</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="avgWaitTime">0min</div>
+            <div class="stat-label">Avg Wait Time</div>
+        </div>
+    </div>
+
+    <!-- Charts Container -->
+    <div class="charts-container">
+        <!-- Gender Distribution -->
+        <div class="summary-chart">
+            <h4>Patient Gender Distribution</h4>
+            <div class="chart-container">
+                <div id="genderChart" class="chart-visual"></div>
+            </div>
+        </div>
+
+        <!-- Common Illnesses -->
+        <div class="summary-chart">
+            <h4>Top Common Illnesses</h4>
+            <div class="chart-container">
+                <div id="illnessChart" class="chart-visual"></div>
+            </div>
+        </div>
+
+        <!-- Patient Type Distribution -->
+        <div class="summary-chart">
+            <h4>Patient Type Distribution</h4>
+            <div class="chart-container">
+                <div id="patientTypeChart" class="chart-visual"></div>
+            </div>
+        </div>
+
+        <!-- Monthly Trends -->
+        <div class="summary-chart">
+            <h4>Monthly Visit Trends</h4>
+            <div class="chart-container">
+                <div id="trendChart" class="chart-visual"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Statistics -->
+    <div class="detailed-stats">
+        <h4>Detailed Patient Statistics</h4>
+        <div class="stats-grid" id="detailedStats">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Age Distribution -->
+    <div class="filters-card">
+        <h4>Age Group Distribution</h4>
+        <div class="chart-container">
+            <div id="ageChart" class="chart-visual"></div>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/receptionist.js"></script>
+</body>
+</html>

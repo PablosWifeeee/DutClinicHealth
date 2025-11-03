@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Records - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --gray-light: #bdc3c7;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--secondary);
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--secondary), var(--accent));
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hospital-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hospital-logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .hospital-logo h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 24px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray-dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 20px;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-actions .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .quick-actions .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Emergency Records Page Styles */
+        .emergency-records-container {
+            padding: 20px 30px;
+        }
+
+        .emergency-details-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .action-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--gray-light);
+        }
+
+        .action-card h3 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: var(--gray);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background-color: var(--gray-dark);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .badge-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            width: 150px;
+            color: var(--secondary);
+        }
+        
+        .info-value {
+            flex: 1;
+            color: var(--gray-dark);
+        }
+        
+        .reference-number {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            background-color: var(--primary);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: white;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .close-btn:hover {
+            color: #f8f9fa;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .emergency-info {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: var(--white);
+            color: var(--secondary);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray-dark);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-left: 2px solid var(--primary);
+            padding-left: 20px;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            border: 2px solid var(--white);
+        }
+
+        .timeline-time {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .timeline-content {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .timeline-content strong {
+            color: var(--secondary);
+        }
+
+        .timeline-content p {
+            margin: 5px 0 0 0;
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        /* Record Updated Status */
+        .record-updated {
+            background-color: rgba(39, 174, 96, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .record-updated i {
+            color: var(--success);
+            font-size: 18px;
+        }
+
+        .record-updated span {
+            color: var(--success);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-ambulance"></i>
+                    <h2>Paramedic Portal</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="paramedic-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li class="active"><a href="emergency-records.html"><i class="fas fa-phone-alt"></i> Emergency Records</a></li>
+                <li><a href="patient-care.html"><i class="fas fa-heartbeat"></i> Patient Care</a></li>
+                <li><a href="ambulance-status.html"><i class="fas fa-ambulance"></i> Ambulance Status</a></li>
+                <li><a href="medical-supplies.html"><i class="fas fa-first-aid"></i> Medical Supplies</a></li>
+                <li><a href="paramedic-schedule.html"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+                <li><a href="messaging.html"><i class="fas fa-comments"></i> Messages</a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Switch User</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Paramedic+Alex&background=3498db&color=fff" alt="Paramedic">
+                    <div class="user-info">
+                        <span class="user-name">Alex Morgan</span>
+                        <span class="user-role">Senior Paramedic</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Emergency Records</h1>
+                    <p>Manage and update emergency response activities</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="goOnDuty()">
+                            <i class="fas fa-play-circle"></i> Go On Duty
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="emergency-records-container">
+                <button class="back-button" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </button>
+
+                <div class="emergency-details-card">
+                    <h2>Emergency Case Details</h2>
+                    <div class="info-row">
+                        <div class="info-label">Student Name:</div>
+                        <div class="info-value" id="recordStudentName">Sarah Johnson</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Student ID:</div>
+                        <div class="info-value" id="recordStudentId">22123457</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Location:</div>
+                        <div class="info-value" id="recordLocation">Library, 2nd Floor</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Condition:</div>
+                        <div class="info-value" id="recordCondition">Severe Allergic Reaction</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Priority:</div>
+                        <div class="info-value"><span class="badge badge-danger" id="recordPriority">HIGH</span></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Reported:</div>
+                        <div class="info-value" id="recordReported">5 minutes ago</div>
+                    </div>
+                    <div class="reference-number" id="recordReferenceNumber">
+                        REF: EMG-2023-4582
+                    </div>
+
+                    <!-- Record Updated Status - Initially Hidden -->
+                    <div class="record-updated" id="recordUpdatedStatus" style="display: none;">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Record Updated for Sarah Johnson</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openArrivalActivityModal()">
+                        <i class="fas fa-first-aid"></i> Record Arrival Activity
+                    </button>
+                    <button class="btn btn-success" onclick="openEmergencyOutcomeModal()">
+                        <i class="fas fa-file-medical-alt"></i> Record Emergency Outcome
+                    </button>
+                </div>
+
+                <div class="action-card">
+                    <h3><i class="fas fa-history"></i> Activity Timeline</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:05</div>
+                            <div class="timeline-content">
+                                <strong>Emergency Reported</strong>
+                                <p>Student reported severe allergic reaction at Library, 2nd Floor</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:07</div>
+                            <div class="timeline-content">
+                                <strong>Ambulance Dispatched</strong>
+                                <p>AMB-001 dispatched to location (5 min ETA)</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:12</div>
+                            <div class="timeline-content">
+                                <strong>Arrival at Scene</strong>
+                                <p>Paramedic team arrived at emergency location</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Record Arrival Activity Modal -->
+    <div class="modal-overlay" id="arrivalActivityModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Record Arrival Activity</h3>
+                <button class="close-btn" onclick="closeArrivalActivityModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="emergency-info">
+                    <div class="info-row">
+                        <div class="info-label">Case:</div>
+                        <div class="info-value" id="arrivalStudentName">Sarah Johnson - Severe Allergic Reaction</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Reference:</div>
+                        <div class="info-value" id="arrivalReference">REF: EMG-2023-4582</div>
+                    </div>
+                </div>
+                
+                <form id="arrivalActivityForm">
+                    <div class="form-group">
+                        <label for="arrivalTime">Arrival Time</label>
+                        <input type="datetime-local" id="arrivalTime" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="initialAssessment">Initial Patient Assessment</label>
+                        <textarea id="initialAssessment" class="form-control" rows="3" placeholder="Describe patient's condition upon arrival..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vitalSigns">Vital Signs</label>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="text" id="heartRate" class="form-control" placeholder="Heart Rate (BPM)">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="bloodPressure" class="form-control" placeholder="Blood Pressure">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="respiratoryRate" class="form-control" placeholder="Respiratory Rate">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="initialTreatment">Initial Treatment Provided</label>
+                        <textarea id="initialTreatment" class="form-control" rows="3" placeholder="Describe initial medical care provided..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="medicationsAdministered">Medications Administered</label>
+                        <textarea id="medicationsAdministered" class="form-control" rows="2" placeholder="List any medications administered..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeArrivalActivityModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitArrivalActivity()">
+                    <i class="fas fa-save"></i> Save Arrival Activity
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Record Emergency Outcome Modal -->
+    <div class="modal-overlay" id="emergencyOutcomeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Record Emergency Outcome</h3>
+                <button class="close-btn" onclick="closeEmergencyOutcomeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="emergency-info">
+                    <div class="info-row">
+                        <div class="info-label">Case:</div>
+                        <div class="info-value" id="outcomeStudentName">Sarah Johnson - Severe Allergic Reaction</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Reference:</div>
+                        <div class="info-value" id="outcomeReference">REF: EMG-2023-4582</div>
+                    </div>
+                </div>
+                
+                <form id="emergencyOutcomeForm">
+                    <div class="form-group">
+                        <label for="finalAssessment">Final Patient Assessment</label>
+                        <textarea id="finalAssessment" class="form-control" rows="3" placeholder="Describe patient's condition after treatment..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="treatmentProvided">Full Treatment Provided</label>
+                        <textarea id="treatmentProvided" class="form-control" rows="3" placeholder="Detail all medical procedures and treatments..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="disposition">Patient Disposition</label>
+                        <select id="disposition" class="form-control" required>
+                            <option value="">-- Select disposition --</option>
+                            <option value="treated_released">Treated and Released</option>
+                            <option value="transported_hospital">Transported to Hospital</option>
+                            <option value="transferred_facility">Transferred to Medical Facility</option>
+                            <option value="refused_care">Refused Further Care</option>
+                            <option value="deceased">Deceased</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="hospitalGroup" style="display: none;">
+                        <label for="hospital">Hospital/Facility</label>
+                        <input type="text" id="hospital" class="form-control" placeholder="Name of hospital or facility">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responseTime">Response Time Analysis</label>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="number" id="dispatchTime" class="form-control" placeholder="Dispatch Time (mins)">
+                            </div>
+                            <div class="form-group">
+                                <input type="number" id="sceneTime" class="form-control" placeholder="Scene Time (mins)">
+                            </div>
+                            <div class="form-group">
+                                <input type="number" id="transportTime" class="form-control" placeholder="Transport Time (mins)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="equipmentUsed">Equipment Used</label>
+                        <textarea id="equipmentUsed" class="form-control" rows="2" placeholder="List medical equipment used during response..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="incidentNotes">Incident Notes & Recommendations</label>
+                        <textarea id="incidentNotes" class="form-control" rows="3" placeholder="Any additional notes or recommendations for future incidents..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeEmergencyOutcomeModal()">Cancel</button>
+                <button class="btn btn-success" onclick="submitEmergencyOutcome()">
+                    <i class="fas fa-file-medical-alt"></i> Complete Emergency Record
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current datetime for arrival time
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const formattedNow = now.toISOString().slice(0, 16);
+            document.getElementById('arrivalTime').value = formattedNow;
+            
+            // Show/hide hospital field based on disposition
+            document.getElementById('disposition').addEventListener('change', function() {
+                const hospitalGroup = document.getElementById('hospitalGroup');
+                if (this.value === 'transported_hospital' || this.value === 'transferred_facility') {
+                    hospitalGroup.style.display = 'block';
+                } else {
+                    hospitalGroup.style.display = 'none';
+                }
+            });
+        });
+
+        // Modal control functions
+        function openArrivalActivityModal() {
+            document.getElementById('arrivalActivityModal').style.display = 'flex';
+        }
+
+        function closeArrivalActivityModal() {
+            document.getElementById('arrivalActivityModal').style.display = 'none';
+            document.getElementById('arrivalActivityForm').reset();
+        }
+
+        function openEmergencyOutcomeModal() {
+            document.getElementById('emergencyOutcomeModal').style.display = 'flex';
+        }
+
+        function closeEmergencyOutcomeModal() {
+            document.getElementById('emergencyOutcomeModal').style.display = 'none';
+            document.getElementById('emergencyOutcomeForm').reset();
+            document.getElementById('hospitalGroup').style.display = 'none';
+        }
+
+        // Show record updated status
+        function showRecordUpdated() {
+            const statusElement = document.getElementById('recordUpdatedStatus');
+            statusElement.style.display = 'flex';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
+        }
+
+        // Form submission functions
+        function submitArrivalActivity() {
+            const arrivalTime = document.getElementById('arrivalTime').value;
+            const initialAssessment = document.getElementById('initialAssessment').value;
+            
+            if (!arrivalTime || !initialAssessment) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // In a real application, you would send this data to the server
+            console.log('Arrival Activity Submitted:');
+            console.log('Arrival Time:', arrivalTime);
+            console.log('Initial Assessment:', initialAssessment);
+            
+            alert('Arrival activity recorded successfully!');
+            closeArrivalActivityModal();
+            
+            // Show "Record Updated" status
+            showRecordUpdated();
+            
+            // Update timeline in a real application
+        }
+
+        function submitEmergencyOutcome() {
+            const finalAssessment = document.getElementById('finalAssessment').value;
+            const treatmentProvided = document.getElementById('treatmentProvided').value;
+            const disposition = document.getElementById('disposition').value;
+            
+            if (!finalAssessment || !treatmentProvided || !disposition) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // In a real application, you would send this data to the server
+            console.log('Emergency Outcome Submitted:');
+            console.log('Final Assessment:', finalAssessment);
+            console.log('Treatment Provided:', treatmentProvided);
+            console.log('Disposition:', disposition);
+            
+            alert('Emergency outcome recorded successfully! Case marked as completed.');
+            closeEmergencyOutcomeModal();
+            
+            // Show "Record Updated" status
+            showRecordUpdated();
+            
+            // Update case status in a real application
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('arrivalActivityModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeArrivalActivityModal();
+            }
+        });
+
+        document.getElementById('emergencyOutcomeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEmergencyOutcomeModal();
+            }
+        });
+
+        // Navigation functions
+        function goBack() {
+            window.location.href = 'paramedic-dashboard.html';
+        }
+
+        function goOnDuty() {
+            alert('You are now on duty and ready for emergency calls.');
+        }
+    </script>
+</body>
+</html>

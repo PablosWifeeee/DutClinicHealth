@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication Delivery - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --gray-light: #bdc3c7;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--secondary);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .back-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        h1 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: var(--gray-dark);
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            border: 1px solid var(--gray-light);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .card-header i {
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .card-header h2 {
+            color: var(--secondary);
+            font-size: 22px;
+        }
+
+        .medication-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .medication-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .medication-info h3 {
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+
+        .medication-info p {
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .medication-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-delivered {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            margin: 0;
+        }
+
+        .submit-btn {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #219653;
+        }
+
+        .confirmation-message {
+            display: none;
+            background-color: rgba(39, 174, 96, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .confirmation-message i {
+            font-size: 48px;
+            color: var(--success);
+            margin-bottom: 15px;
+        }
+
+        .confirmation-message h3 {
+            color: var(--success);
+            margin-bottom: 10px;
+        }
+
+        .confirmation-message p {
+            color: var(--gray-dark);
+            margin-bottom: 15px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Medication Delivery</h1>
+                <p class="subtitle">Request delivery of your prescribed medications</p>
+            </div>
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-prescription-bottle-alt"></i>
+                <h2>Your Prescribed Medications</h2>
+            </div>
+            <div class="medication-list">
+                <div class="medication-item">
+                    <div class="medication-info">
+                        <h3>Amoxicillin 500mg</h3>
+                        <p>Take one tablet three times daily for 7 days</p>
+                    </div>
+                    <div class="medication-status status-delivered">Delivered</div>
+                </div>
+                
+                <div class="medication-item">
+                    <div class="medication-info">
+                        <h3>Ibuprofen 400mg</h3>
+                        <p>Take as needed for pain, up to 3 times daily</p>
+                    </div>
+                    <div class="medication-status status-delivered">Delivered</div>
+                </div>
+                
+                <div class="medication-item">
+                    <div class="medication-info">
+                        <h3>Vitamin D3 1000IU</h3>
+                        <p>Take one tablet daily with food</p>
+                    </div>
+                    <div class="medication-status status-pending">Pending Delivery</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-truck"></i>
+                <h2>Schedule Delivery</h2>
+            </div>
+            
+            <form id="deliveryForm">
+                <div class="form-group">
+                    <label for="campus">Select Your DUT Residence</label>
+                    <select id="campus" required onchange="toggleOtherFields()">
+                        <option value="">-- Select Campus --</option>
+                        <option value="steve-biko">Steve Biko Campus</option>
+                        <option value="ml-sultan">ML Sultan Campus</option>
+                        <option value="ritson">Ritson Campus</option>
+                        <option value="brickfield">Brickfield Campus</option>
+                        <option value="city-center">City Center Campus</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group hidden" id="otherResidenceGroup">
+                    <label for="residence">Residence Name</label>
+                    <input type="text" id="residence" placeholder="e.g., Mandela Hall, Block A">
+                </div>
+                
+                <div class="form-group hidden" id="paymentGroup">
+                    <label>Payment Method</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="payment" value="online" id="onlinePayment">
+                            <i class="fas fa-globe"></i> Pay Online
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="payment" value="cash">
+                            <i class="fas fa-money-bill-wave"></i> Cash on Delivery
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-check-circle"></i> Confirm Delivery Request
+                </button>
+            </form>
+            
+            <div class="confirmation-message" id="confirmationMessage">
+                <i class="fas fa-check-circle"></i>
+                <h3>Delivery Request Confirmed!</h3>
+                <p>Your medication delivery has been scheduled. You will receive a confirmation SMS with delivery details.</p>
+                <p>Estimated delivery time: 2-4 hours</p>
+                <button class="back-btn" onclick="goBack()" style="margin-top: 15px;">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = 'patient-dashboard.html';
+        }
+        
+        function toggleOtherFields() {
+            const campusSelect = document.getElementById('campus');
+            const otherResidenceGroup = document.getElementById('otherResidenceGroup');
+            const paymentGroup = document.getElementById('paymentGroup');
+            const residenceInput = document.getElementById('residence');
+            const paymentRadios = document.querySelectorAll('input[name="payment"]');
+            
+            if (campusSelect.value === 'other') {
+                // Show the other residence field and payment method
+                otherResidenceGroup.classList.remove('hidden');
+                paymentGroup.classList.remove('hidden');
+                
+                // Make these fields required
+                residenceInput.required = true;
+                paymentRadios.forEach(radio => radio.required = true);
+            } else {
+                // Hide the other residence field and payment method
+                otherResidenceGroup.classList.add('hidden');
+                paymentGroup.classList.add('hidden');
+                
+                // Make these fields not required
+                residenceInput.required = false;
+                paymentRadios.forEach(radio => radio.required = false);
+            }
+        }
+
+        document.getElementById('deliveryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const campus = document.getElementById('campus').value;
+            const residence = document.getElementById('residence').value;
+            let paymentMethod = '';
+            
+            if (campus === 'other') {
+                paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+                
+                // If online payment is selected, redirect to payment page
+                if (paymentMethod === 'online') {
+                    // Store delivery data temporarily (in a real app, use sessionStorage or backend)
+                    const deliveryData = {
+                        campus: campus,
+                        residence: residence,
+                        paymentMethod: paymentMethod
+                    };
+                    
+                    // Redirect to payment page with data as URL parameters
+                    window.location.href = `payment-gateway.html?campus=${encodeURIComponent(campus)}&residence=${encodeURIComponent(residence)}&paymentMethod=${paymentMethod}`;
+                    return; // Don't submit the form yet
+                }
+            }
+            
+            // For cash on delivery or non-other campuses, proceed with normal confirmation
+            confirmDelivery(campus, residence, paymentMethod);
+        });
+        
+        function confirmDelivery(campus, residence, paymentMethod) {
+            // In a real application, you would send this data to a server
+            console.log({
+                campus: campus,
+                residence: campus === 'other' ? residence : campus,
+                paymentMethod: paymentMethod
+            });
+            
+            // Show confirmation message
+            document.getElementById('confirmationMessage').style.display = 'block';
+            document.getElementById('deliveryForm').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

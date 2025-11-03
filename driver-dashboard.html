@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Driver - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/driver.css">
+    <style>
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: #495057;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .close-btn:hover {
+            color: #495057;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            border: 1px solid #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #6c757d;
+            color: #6c757d;
+        }
+        
+        .btn-outline:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        /* Student List Styles */
+        .student-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .student-item:hover {
+            background-color: #f8f9fa;
+            border-color: #007bff;
+        }
+        
+        .student-item.selected {
+            background-color: #e7f3ff;
+            border-color: #007bff;
+        }
+        
+        .student-info h4 {
+            margin: 0 0 5px 0;
+            color: #495057;
+        }
+        
+        .student-info p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .student-otp {
+            font-weight: 600;
+            color: #28a745;
+            background-color: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        /* OTP Input Styles */
+        .otp-input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .otp-input {
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 2px solid #ced4da;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+        }
+        
+        .otp-input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        .otp-input.filled {
+            border-color: #28a745;
+            background-color: #f0fff4;
+        }
+        
+        .otp-input.error {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+        
+        .otp-instructions {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .confirmation-message {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .confirmation-message i {
+            font-size: 3rem;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        
+        .confirmation-message h3 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .confirmation-message p {
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-truck-medical"></i>
+                    <h2>Driver Portal</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="active"><a href="driver-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="delivery-routes.html"><i class="fas fa-route"></i> Delivery Routes</a></li>
+                <li><a href="delivery-confirmation.html"><i class="fas fa-qrcode"></i> Confirm Delivery</a></li>
+                <li><a href="failed-deliveries.html"><i class="fas fa-exclamation-circle"></i> Failed Deliveries</a></li>
+                <li><a href="driver-schedule.html"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+                <li><a href="vehicle-status.html"><i class="fas fa-truck"></i> Vehicle Status</a></li>
+                <li><a href="messaging.html"><i class="fas fa-comments"></i> Messaging</a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Switch User</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Driver+Tom&background=a8edea&color=000" alt="Driver">
+                    <div class="user-info">
+                        <span class="user-name">Tom Baker</span>
+                        <span class="user-role">Delivery Driver</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Delivery Dashboard</h1>
+                    <p>Welcome back, Tom. 6 deliveries scheduled for today.</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">4</span>
+                    </div>
+                    <div class="vehicle-status">
+                        <i class="fas fa-truck"></i>
+                        <span>Vehicle 5: READY</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>6</h3>
+                        <p>Today's Deliveries</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 20%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>2</h3>
+                        <p>Completed</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> On track
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>4</h3>
+                        <p>Pending</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-info"></i> Next: 11:30 AM
+                    </div>
+                </div>
+                
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>1</h3>
+                        <p>Failed Yesterday</p>
+                    </div>
+                    <div class="stat-trend down">
+                        <i class="fas fa-arrow-down"></i> Reschedule
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Today's Delivery Schedule</h2>
+                    <a href="delivery-routes.html" class="view-all">View Routes</a>
+                </div>
+                <div class="delivery-list">
+                    <div class="delivery-item completed">
+                        <div class="delivery-time">09:00 AM</div>
+                        <div class="delivery-details">
+                            <h4>John Doe - Amoxicillin</h4>
+                            <p>Student Residence A, Room 205</p>
+                            <span class="status completed">Delivered ✓</span>
+                        </div>
+                        <div class="delivery-confirmation">
+                            <i class="fas fa-qrcode"></i>
+                            <span>QR Confirmed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="delivery-item completed">
+                        <div class="delivery-time">10:15 AM</div>
+                        <div class="delivery-details">
+                            <h4>Sarah Smith - Ventolin</h4>
+                            <p>Library - Study Area 2</p>
+                            <span class="status completed">Delivered ✓</span>
+                        </div>
+                        <div class="delivery-confirmation">
+                            <i class="fas fa-qrcode"></i>
+                            <span>QR Confirmed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="delivery-item current">
+                        <div class="delivery-time">11:30 AM</div>
+                        <div class="delivery-details">
+                            <h4>Mike Johnson - Metformin</h4>
+                            <p>Sports Complex - Office</p>
+                            <span class="status current">In Progress</span>
+                        </div>
+                        <div class="delivery-actions">
+                            <button class="btn btn-primary" onclick="startDelivery('Mike Johnson')">
+                                Start Delivery
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="delivery-item">
+                        <div class="delivery-time">02:00 PM</div>
+                        <div class="delivery-details">
+                            <h4>Lisa Brown - Insulin</h4>
+                            <p>Student Residence B, Room 312</p>
+                            <span class="status pending">Scheduled</span>
+                        </div>
+                        <div class="delivery-actions">
+                            <button class="btn btn-outline" onclick="viewDetails()">
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Delivery Tools</h2>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card" onclick="scanQRCode()">
+                        <div class="tool-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h4>QR Scanner</h4>
+                        <p>Scan to confirm delivery</p>
+                    </div>
+                    
+                    <div class="tool-card" onclick="enterOTP()">
+                        <div class="tool-icon">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <h4>OTP Entry</h4>
+                        <p>Manual delivery confirmation</p>
+                    </div>
+                    
+                    <div class="tool-card" onclick="reportFailed()">
+                        <div class="tool-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h4>Report Issue</h4>
+                        <p>Log failed delivery attempts</p>
+                    </div>
+                    
+                    <div class="tool-card" onclick="viewMap()">
+                        <div class="tool-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <h4>Delivery Map</h4>
+                        <p>View optimized routes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Failed Delivery - Reschedule</h2>
+                </div>
+                <div class="failed-delivery">
+                    <div class="failed-item">
+                        <div class="failed-info">
+                            <h4>David Wilson - Blood Pressure Meds</h4>
+                            <p>Student Residence C, Room 108</p>
+                            <span class="failed-reason">Patient not available</span>
+                        </div>
+                        <div class="reschedule-options">
+                            <button class="btn btn-outline" onclick="rescheduleDelivery('tomorrow')">
+                                Tomorrow
+                            </button>
+                            <button class="btn btn-outline" onclick="rescheduleDelivery('weekend')">
+                                Weekend
+                            </button>
+                            <button class="btn btn-primary" onclick="contactPatient()">
+                                Contact Patient
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Failed Delivery Report Modal -->
+    <div class="modal-overlay" id="failedDeliveryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Report Failed Delivery</h3>
+                <button class="close-btn" onclick="closeFailedDeliveryModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="failedDeliveryForm">
+                    <div class="form-group">
+                        <label for="deliverySelect">Select Delivery</label>
+                        <select id="deliverySelect" class="form-control" required>
+                            <option value="">-- Select a delivery --</option>
+                            <option value="1">Mike Johnson - Metformin (11:30 AM)</option>
+                            <option value="2">Lisa Brown - Insulin (02:00 PM)</option>
+                            <option value="3">Robert Davis - Antibiotics (03:30 PM)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="failureReason">Failure Reason</label>
+                        <select id="failureReason" class="form-control" required>
+                            <option value="">-- Select reason --</option>
+                            <option value="patient_unavailable">Patient not available</option>
+                            <option value="wrong_address">Wrong address provided</option>
+                            <option value="patient_refused">Patient refused delivery</option>
+                            <option value="medication_issue">Issue with medication</option>
+                            <option value="vehicle_issue">Vehicle breakdown</option>
+                            <option value="weather">Weather conditions</option>
+                            <option value="other">Other reason</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="otherReasonGroup" style="display: none;">
+                        <label for="otherReason">Please specify</label>
+                        <textarea id="otherReason" class="form-control" rows="3" placeholder="Provide details about the issue..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="additionalNotes">Additional Notes (Optional)</label>
+                        <textarea id="additionalNotes" class="form-control" rows="3" placeholder="Any additional information..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeFailedDeliveryModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitFailedDelivery()">Confirm Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OTP Entry Modal -->
+    <div class="modal-overlay" id="otpModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>OTP Delivery Confirmation</h3>
+                <button class="close-btn" onclick="closeOTPModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="studentSelection">
+                    <p>Select a student to confirm delivery:</p>
+                    <div class="student-list">
+                        <div class="student-item" onclick="selectStudent('john-doe')">
+                            <div class="student-info">
+                                <h4>John Doe</h4>
+                                <p>Student Residence A, Room 205</p>
+                                <p><strong>Medication:</strong> Amoxicillin 500mg</p>
+                            </div>
+                            <div class="student-otp">OTP: 1234</div>
+                        </div>
+                        
+                        <div class="student-item" onclick="selectStudent('mike-johnson')">
+                            <div class="student-info">
+                                <h4>Mike Johnson</h4>
+                                <p>Sports Complex - Office</p>
+                                <p><strong>Medication:</strong> Metformin 850mg</p>
+                            </div>
+                            <div class="student-otp">OTP: 5678</div>
+                        </div>
+                        
+                        <div class="student-item" onclick="selectStudent('lisa-brown')">
+                            <div class="student-info">
+                                <h4>Lisa Brown</h4>
+                                <p>Student Residence B, Room 312</p>
+                                <p><strong>Medication:</strong> Insulin</p>
+                            </div>
+                            <div class="student-otp">OTP: 9012</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="otpEntry" style="display: none;">
+                    <h4 id="selectedStudentName">Confirm Delivery for John Doe</h4>
+                    <p id="selectedStudentAddress" class="otp-instructions">Student Residence A, Room 205</p>
+                    
+                    <div class="otp-instructions">
+                        Enter the 4-digit OTP provided by the student:
+                    </div>
+                    
+                    <div class="otp-input-group">
+                        <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 1)">
+                        <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 2)">
+                        <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 3)">
+                        <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 4)">
+                    </div>
+                    
+                    <div class="otp-instructions">
+                        <small>OTP for this student: <strong id="expectedOTP">1234</strong></small>
+                    </div>
+                </div>
+                
+                <div id="otpConfirmation" class="confirmation-message">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Delivery Confirmed!</h3>
+                    <p id="confirmationMessageText">Medication delivered successfully to John Doe.</p>
+                    <p>Delivery time recorded: <span id="deliveryTime"></span></p>
+                </div>
+            </div>
+            <div class="modal-footer" id="otpModalFooter">
+                <button class="btn btn-outline" onclick="closeOTPModal()">Cancel</button>
+                <button class="btn btn-primary" id="verifyOTPBtn" onclick="verifyOTP()" style="display: none;">Verify OTP</button>
+                <button class="btn btn-primary" id="finishBtn" onclick="closeOTPModal()" style="display: none;">Finish</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/app.js"></script>
+    <script src="../scripts/driver.js"></script>
+    <script>
+        // Student data with OTPs
+        const studentData = {
+            'john-doe': {
+                name: 'John Doe',
+                address: 'Student Residence A, Room 205',
+                medication: 'Amoxicillin 500mg',
+                otp: '1234'
+            },
+            'mike-johnson': {
+                name: 'Mike Johnson',
+                address: 'Sports Complex - Office',
+                medication: 'Metformin 850mg',
+                otp: '5678'
+            },
+            'lisa-brown': {
+                name: 'Lisa Brown',
+                address: 'Student Residence B, Room 312',
+                medication: 'Insulin',
+                otp: '9012'
+            }
+        };
+        
+        let selectedStudentId = null;
+        
+        // Function to open the OTP modal
+        function enterOTP() {
+            document.getElementById('otpModal').style.display = 'flex';
+            resetOTPModal();
+        }
+        
+        // Function to close the OTP modal
+        function closeOTPModal() {
+            document.getElementById('otpModal').style.display = 'none';
+            resetOTPModal();
+        }
+        
+        // Reset OTP modal to initial state
+        function resetOTPModal() {
+            document.getElementById('studentSelection').style.display = 'block';
+            document.getElementById('otpEntry').style.display = 'none';
+            document.getElementById('otpConfirmation').style.display = 'none';
+            document.getElementById('verifyOTPBtn').style.display = 'none';
+            document.getElementById('finishBtn').style.display = 'none';
+            
+            // Clear OTP inputs
+            const otpInputs = document.querySelectorAll('.otp-input');
+            otpInputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('filled', 'error');
+            });
+            
+            // Clear student selection
+            const studentItems = document.querySelectorAll('.student-item');
+            studentItems.forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            selectedStudentId = null;
+        }
+        
+        // Select a student for OTP entry
+        function selectStudent(studentId) {
+            selectedStudentId = studentId;
+            
+            // Update UI to show selected student
+            const studentItems = document.querySelectorAll('.student-item');
+            studentItems.forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            event.currentTarget.classList.add('selected');
+            
+            // Show OTP entry section
+            document.getElementById('studentSelection').style.display = 'none';
+            document.getElementById('otpEntry').style.display = 'block';
+            document.getElementById('verifyOTPBtn').style.display = 'block';
+            
+            // Update student info in OTP section
+            const student = studentData[studentId];
+            document.getElementById('selectedStudentName').textContent = `Confirm Delivery for ${student.name}`;
+            document.getElementById('selectedStudentAddress').textContent = student.address;
+            document.getElementById('expectedOTP').textContent = student.otp;
+            
+            // Focus on first OTP input
+            document.querySelector('.otp-input').focus();
+        }
+        
+        // Move to next OTP input automatically
+        function moveToNext(input, nextIndex) {
+            // Only allow numbers
+            input.value = input.value.replace(/[^0-9]/g, '');
+            
+            if (input.value.length === 1) {
+                input.classList.add('filled');
+                
+                // Move to next input if available
+                const nextInput = document.querySelector(`.otp-input:nth-child(${nextIndex + 1})`);
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            } else {
+                input.classList.remove('filled');
+            }
+        }
+        
+        // Verify the entered OTP
+        function verifyOTP() {
+            if (!selectedStudentId) return;
+            
+            const student = studentData[selectedStudentId];
+            const otpInputs = document.querySelectorAll('.otp-input');
+            let enteredOTP = '';
+            
+            // Collect entered OTP
+            otpInputs.forEach(input => {
+                enteredOTP += input.value;
+            });
+            
+            // Validate OTP
+            if (enteredOTP.length !== 4) {
+                alert('Please enter a complete 4-digit OTP.');
+                return;
+            }
+            
+            if (enteredOTP === student.otp) {
+                // Correct OTP - show success
+                document.getElementById('otpEntry').style.display = 'none';
+                document.getElementById('otpConfirmation').style.display = 'block';
+                document.getElementById('verifyOTPBtn').style.display = 'none';
+                document.getElementById('finishBtn').style.display = 'block';
+                
+                // Update confirmation message
+                document.getElementById('confirmationMessageText').textContent = 
+                    `Medication delivered successfully to ${student.name}.`;
+                
+                // Set current time
+                const now = new Date();
+                document.getElementById('deliveryTime').textContent = 
+                    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                // In a real application, you would send this confirmation to the server
+                console.log(`Delivery confirmed for ${student.name} at ${student.address}`);
+            } else {
+                // Incorrect OTP - show error
+                otpInputs.forEach(input => {
+                    input.classList.add('error');
+                });
+                alert('Incorrect OTP. Please try again.');
+            }
+        }
+        
+        // Close modal when clicking outside of it
+        document.getElementById('otpModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeOTPModal();
+            }
+        });
+        
+        // Failed Delivery Modal Functions
+        function reportFailed() {
+            document.getElementById('failedDeliveryModal').style.display = 'flex';
+        }
+        
+        function closeFailedDeliveryModal() {
+            document.getElementById('failedDeliveryModal').style.display = 'none';
+            document.getElementById('failedDeliveryForm').reset();
+            document.getElementById('otherReasonGroup').style.display = 'none';
+        }
+        
+        function submitFailedDelivery() {
+            const deliverySelect = document.getElementById('deliverySelect');
+            const failureReason = document.getElementById('failureReason');
+            const additionalNotes = document.getElementById('additionalNotes');
+            
+            // Basic validation
+            if (!deliverySelect.value || !failureReason.value) {
+                alert('Please select both a delivery and a failure reason.');
+                return;
+            }
+            
+            // If "Other" reason is selected, check if details are provided
+            if (failureReason.value === 'other') {
+                const otherReason = document.getElementById('otherReason').value;
+                if (!otherReason.trim()) {
+                    alert('Please provide details for the "Other" reason.');
+                    return;
+                }
+            }
+            
+            // In a real application, you would send this data to the server
+            console.log('Failed Delivery Report Submitted:');
+            console.log('Delivery:', deliverySelect.options[deliverySelect.selectedIndex].text);
+            console.log('Reason:', failureReason.options[failureReason.selectedIndex].text);
+            console.log('Additional Notes:', additionalNotes.value);
+            
+            // Show success message and close modal
+            alert('Failed delivery report submitted successfully.');
+            closeFailedDeliveryModal();
+        }
+        
+        // Show/hide other reason textarea based on selection
+        document.getElementById('failureReason').addEventListener('change', function() {
+            const otherReasonGroup = document.getElementById('otherReasonGroup');
+            if (this.value === 'other') {
+                otherReasonGroup.style.display = 'block';
+            } else {
+                otherReasonGroup.style.display = 'none';
+            }
+        });
+        
+        // Other existing functions
+        function scanQRCode() {
+            alert('QR Scanner functionality would open here.');
+        }
+        
+        function viewMap() {
+            alert('Delivery Map would open here.');
+        }
+        
+        function startDelivery(patient) {
+            alert(`Starting delivery for ${patient}`);
+        }
+        
+        function viewDetails() {
+            alert('Delivery details would be shown here.');
+        }
+        
+        function rescheduleDelivery(time) {
+            alert(`Rescheduling delivery for ${time}`);
+        }
+        
+        function contactPatient() {
+            alert('Contacting patient...');
+        }
+    </script>
+</body>
+</html>

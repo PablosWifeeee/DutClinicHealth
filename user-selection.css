@@ -1,0 +1,421 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-blue: #1e3c72;
+    --secondary-blue: #2a5298;
+    --accent-blue: #4facfe;
+    --light-blue: #e3f2fd;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #6c757d;
+    --text-dark: #343a40;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    --receptionist-purple: #8e44ad;
+    --receptionist-light: #9b59b6;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+}
+
+.user-selection-container {
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+/* Header Styles */
+.hospital-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--white);
+}
+
+.hospital-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.hospital-logo i {
+    font-size: 3rem;
+    color: var(--accent-blue);
+}
+
+.hospital-logo h1 {
+    font-size: 3rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+.hospital-tagline {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 300;
+}
+
+/* User Selection Grid - Icons Only */
+.user-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    max-width: 900px;
+    margin: 0 auto 4rem;
+    padding: 0 2rem;
+}
+
+.user-icon-card {
+    background: var(--white);
+    border-radius: 15px;
+    padding: 2rem 1rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.user-icon-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--accent-blue);
+}
+
+.user-icon-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+    border-color: var(--accent-blue);
+}
+
+.user-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--white);
+    transition: all 0.3s ease;
+}
+
+.user-icon-card:hover .user-icon {
+    transform: scale(1.1);
+}
+
+.user-icon.doctor {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.user-icon.nurse {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.user-icon.patient {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.user-icon.pharmacist {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.user-icon.paramedic {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.user-icon.driver {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: var(--text-dark) !important;
+}
+
+/* ADD RECEPTIONIST STYLES HERE */
+.user-icon.receptionist {
+    background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+}
+
+.user-icon.receptionist:hover {
+    background: linear-gradient(135deg, #7d3c98 0%, #8e44ad 100%);
+}
+
+.user-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-blue);
+    display: block;
+}
+
+/* Clinic Information Section */
+.clinic-info-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+}
+
+.info-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-header i {
+    font-size: 1.5rem;
+    color: var(--accent-blue);
+}
+
+.info-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+/* Trading Hours */
+.hours-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hour-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hour-item:last-child {
+    border-bottom: none;
+}
+
+.hour-item.emergency {
+    background: rgba(220, 53, 69, 0.2);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.day {
+    font-weight: 500;
+}
+
+.time {
+    font-weight: 600;
+    color: var(--accent-blue);
+}
+
+.hour-item.emergency .time {
+    color: #ff6b6b;
+}
+
+/* Contact Info */
+.contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+}
+
+.contact-item i {
+    width: 20px;
+    color: var(--accent-blue);
+}
+
+/* Health Event Banner */
+.health-event-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    margin: 0 auto 2rem;
+    max-width: 900px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.event-content {
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.event-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--white);
+}
+
+.event-details {
+    flex: 1;
+    color: var(--white);
+}
+
+.event-details h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.event-details p {
+    margin-bottom: 1rem;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.event-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.event-cta {
+    flex-shrink: 0;
+}
+
+.event-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--white);
+    color: var(--white);
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.event-btn:hover {
+    background: var(--white);
+    color: var(--primary-blue);
+    transform: translateY(-2px);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .user-selection-container {
+        padding: 1rem;
+    }
+    
+    .hospital-logo {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .hospital-logo h1 {
+        font-size: 2.5rem;
+    }
+    
+    .user-selection-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 0;
+    }
+    
+    .user-icon-card {
+        padding: 1.5rem 0.5rem;
+    }
+    
+    .user-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+    
+    .clinic-info-section {
+        grid-template-columns: 1fr;
+        padding: 0;
+    }
+    
+    .event-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .event-details h3 {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-selection-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .user-icon-card {
+        padding: 1rem 0.25rem;
+    }
+    
+    .user-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .user-label {
+        font-size: 0.9rem;
+    }
+    
+    .info-card {
+        padding: 1.5rem;
+    }
+}

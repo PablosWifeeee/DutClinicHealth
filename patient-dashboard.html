@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Portal - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --gray-light: #bdc3c7;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--secondary);
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--secondary), var(--accent));
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hospital-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hospital-logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .hospital-logo h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 24px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray-dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 20px;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray-dark);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: rgba(52, 152, 219, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .stat-info h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+
+        .stat-info p {
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .stat-trend {
+            margin-left: auto;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .stat-trend.up {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .stat-trend.warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-trend.danger {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        /* Content Sections */
+        .content-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            margin: 0 30px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--gray-light);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            background-color: #f8f9fa;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            color: var(--secondary);
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Appointments Section */
+        .no-appointments {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .no-appointments-content {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .no-appointments i {
+            font-size: 64px;
+            color: var(--gray-light);
+            margin-bottom: 20px;
+        }
+
+        .no-appointments h3 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .no-appointments p {
+            color: var(--gray-dark);
+            margin-bottom: 20px;
+        }
+
+        .appointment-list {
+            padding: 20px;
+            display: grid;
+            gap: 15px;
+        }
+
+        .appointment-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .appointment-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .appointment-time {
+            font-weight: 600;
+            color: var(--primary);
+            width: 100px;
+        }
+
+        .appointment-details h4 {
+            margin: 0 0 5px 0;
+            color: var(--secondary);
+        }
+
+        .appointment-details p {
+            margin: 0;
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .appointment-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-scheduled {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary);
+        }
+
+        .status-confirmed {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Quick Access Grid */
+        .quick-access-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .access-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--gray-light);
+        }
+
+        .access-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .access-card i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .access-card span {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        /* Delivery Button */
+        .delivery-btn {
+            background-color: var(--success);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+        
+        .delivery-btn:hover {
+            background-color: #219653;
+        }
+        
+        /* Feedback Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .feedback-modal {
+            background-color: var(--white);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .form-group:last-child {
+            border-bottom: none;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 16px;
+        }
+        
+        select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .rating-question {
+            margin-bottom: 20px;
+        }
+        
+        .rating-question:last-child {
+            margin-bottom: 0;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--secondary);
+            font-size: 15px;
+        }
+        
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        
+        .star {
+            font-size: 28px;
+            color: var(--gray-light);
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 5px;
+        }
+        
+        .star:hover, .star.active {
+            color: var(--warning);
+        }
+        
+        .rating-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+        
+        .rating-scale {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .submit-feedback {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        
+        .submit-feedback:hover {
+            background-color: #219653;
+        }
+        
+        .confirmation-message {
+            text-align: center;
+            padding: 40px 30px;
+            display: none;
+        }
+        
+        .confirmation-message i {
+            font-size: 64px;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+        
+        .confirmation-message h3 {
+            color: var(--success);
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .confirmation-message p {
+            color: var(--gray-dark);
+            margin-bottom: 25px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background-color: var(--gray-light);
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-user-injured"></i>
+                    <h2>Patient Portal</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="active"><a href="patient-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="appointments.html"><i class="fas fa-calendar-plus"></i> Book Appointment</a></li>
+                <li><a href="patient-records.html"><i class="fas fa-file-medical"></i> My Records</a></li>
+                <li><a href="patient-prescriptions.html"><i class="fas fa-prescription"></i> Prescriptions</a></li>
+                <li><a href="patient-messaging.html"><i class="fas fa-comments"></i> Messaging</a></li>
+                <li><a href="patient-billing.html"><i class="fas fa-file-invoice"></i> Billing</a></li>
+                <li><a href="failed-deliveries.html"><i class="fas fa-truck"></i> Failed Deliveries</a></li>
+                <li><a href="emergency.html"><i class="fas fa-ambulance"></i> Emergency</a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Switch User</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=4facfe&color=fff" alt="Patient">
+                    <div class="user-info">
+                        <span class="user-name">John Doe</span>
+                        <span class="user-role">Student - 22123456</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Patient Dashboard</h1>
+                    <p>Welcome back, John. Your health is our priority.</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="book-appointment.html" class="btn btn-primary">
+                            <i class="fas fa-calendar-plus"></i> Book Appointment
+                        </a>
+                        <button class="delivery-btn" onclick="requestDelivery()">
+                            <i class="fas fa-truck-medical"></i> Request Delivery
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>Upcoming Appointments</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-info"></i> Next: Tomorrow
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-prescription"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>1</h3>
+                        <p>Active Prescriptions</p>
+                    </div>
+                    <div class="stat-trend warning">
+                        <i class="fas fa-exclamation"></i> Refill soon
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-medical"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>5</h3>
+                        <p>Medical Records</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> Updated
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>2</h3>
+                        <p>Failed Deliveries</p>
+                    </div>
+                    <div class="stat-trend danger">
+                        <i class="fas fa-exclamation-circle"></i> Needs attention
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointments Section -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>My Appointments</h2>
+                    <a href="appointment-history.html" class="view-all">View History</a>
+                </div>
+                
+                <!-- Appointments List -->
+                <div class="appointment-list" id="appointmentList">
+                    <div class="appointment-item">
+                        <div class="appointment-time">10:00 AM<br>Tomorrow</div>
+                        <div class="appointment-details">
+                            <h4>Dr. Banele Mkhize - General Checkup</h4>
+                            <p>Room 201 • Steve Biko Campus Clinic</p>
+                        </div>
+                        <div class="appointment-status status-confirmed">Confirmed</div>
+                        <div class="appointment-actions">
+                            <button class="btn btn-outline btn-small" onclick="rescheduleAppointment(1)">
+                                Reschedule
+                            </button>
+                            <button class="btn btn-outline btn-small" onclick="cancelAppointment(1)">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="appointment-item">
+                        <div class="appointment-time">02:00 PM<br>Nov 8, 2025</div>
+                        <div class="appointment-details">
+                            <h4>Dr. Sarah Johnson - Follow-up Consultation</h4>
+                            <p>Room 305 • Ritson Campus Medical Center</p>
+                        </div>
+                        <div class="appointment-status status-scheduled">Scheduled</div>
+                        <div class="appointment-actions">
+                            <button class="btn btn-outline btn-small" onclick="rescheduleAppointment(2)">
+                                Reschedule
+                            </button>
+                            <button class="btn btn-outline btn-small" onclick="cancelAppointment(2)">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="appointment-item">
+                        <div class="appointment-time">11:15 AM<br>Nov 4, 2025</div>
+                        <div class="appointment-details">
+                            <h4>Lab Results Review - Blood Test Analysis</h4>
+                            <p>Room 102 • ML Sultan Campus Laboratory</p>
+                        </div>
+                        <div class="appointment-status status-scheduled">Scheduled</div>
+                        <div class="appointment-actions">
+                            <button class="btn btn-outline btn-small" onclick="rescheduleAppointment(3)">
+                                Reschedule
+                            </button>
+                            <button class="btn btn-outline btn-small" onclick="cancelAppointment(3)">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Quick Access</h2>
+                </div>
+                <div class="quick-access-grid">
+                    <div class="access-card" onclick="viewMedicalRecords()">
+                        <i class="fas fa-file-medical-alt"></i>
+                        <span>Medical Records</span>
+                    </div>
+                    <div class="access-card" onclick="viewPrescriptions()">
+                        <i class="fas fa-prescription-bottle"></i>
+                        <span>Prescriptions</span>
+                    </div>
+                    <div class="access-card" onclick="sendMessageToDoctor()">
+                        <i class="fas fa-comment-medical"></i>
+                        <span>Message Doctor</span>
+                    </div>
+                    <div class="access-card" onclick="requestDelivery()">
+                        <i class="fas fa-truck-medical"></i>
+                        <span>Medication Delivery</span>
+                    </div>
+                    <div class="access-card" onclick="viewFailedDeliveries()">
+                        <i class="fas fa-truck"></i>
+                        <span>Failed Deliveries</span>
+                    </div>
+                    <div class="access-card" onclick="viewLabResults()">
+                        <i class="fas fa-microscope"></i>
+                        <span>Lab Results</span>
+                    </div>
+                    <div class="access-card" onclick="giveFeedback()">
+                        <i class="fas fa-star"></i>
+                        <span>Give Feedback</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Enhanced Feedback Modal -->
+    <div class="modal-overlay" id="feedbackModal">
+        <div class="feedback-modal">
+            <div class="modal-header">
+                <h2>Share Your Feedback</h2>
+                <button class="close-btn" onclick="closeFeedbackModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                
+                <form id="feedbackForm">
+                    <div class="form-group">
+                        <label for="appointment">Select Past Appointment (2025)</label>
+                        <select id="appointment" required>
+                            <option value="">-- Select a past appointment --</option>
+                            <option value="1">Dr. Banele Mkhize - General Checkup (Oct 15, 2025)</option>
+                            <option value="2">Dr. Sarah Johnson - Dermatology Consultation (Sep 28, 2025)</option>
+                            <option value="3">Dr. Michael Chen - Dental Checkup (Sep 10, 2025)</option>
+                            <option value="4">Dr. Amanda Williams - Vaccination (Aug 22, 2025)</option>
+                            <option value="5">Lab Tests - Blood Work & Analysis (Aug 5, 2025)</option>
+                            <option value="6">Dr. Robert Johnson - ENT Specialist (Jul 18, 2025)</option>
+                            <option value="7">Dr. Lisa Brown - Physical Therapy Session (Jun 30, 2025)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Please rate your experience:</label>
+                        
+                        <div class="rating-question">
+                            <div class="question-text">How would you rate the doctor's communication skills?</div>
+                            <div class="star-rating" id="communicationRating">
+                                <span class="star" data-rating="1">★</span>
+                                <span class="star" data-rating="2">★</span>
+                                <span class="star" data-rating="3">★</span>
+                                <span class="star" data-rating="4">★</span>
+                                <span class="star" data-rating="5">★</span>
+                            </div>
+                            <div class="rating-labels">
+                                <span>Poor</span>
+                                <span>Excellent</span>
+                            </div>
+                            <input type="hidden" id="communication" name="communication" required>
+                        </div>
+                        
+                        <div class="rating-question">
+                            <div class="question-text">How satisfied are you with the waiting time?</div>
+                            <div class="star-rating" id="waitingRating">
+                                <span class="star" data-rating="1">★</span>
+                                <span class="star" data-rating="2">★</span>
+                                <span class="star" data-rating="3">★</span>
+                                <span class="star" data-rating="4">★</span>
+                                <span class="star" data-rating="5">★</span>
+                            </div>
+                            <div class="rating-labels">
+                                <span>Very Dissatisfied</span>
+                                <span>Very Satisfied</span>
+                            </div>
+                            <input type="hidden" id="waiting" name="waiting" required>
+                        </div>
+                        
+                        <div class="rating-question">
+                            <div class="question-text">How would you rate the cleanliness of the facility?</div>
+                            <div class="star-rating" id="cleanlinessRating">
+                                <span class="star" data-rating="1">★</span>
+                                <span class="star" data-rating="2">★</span>
+                                <span class="star" data-rating="3">★</span>
+                                <span class="star" data-rating="4">★</span>
+                                <span class="star" data-rating="5">★</span>
+                            </div>
+                            <div class="rating-labels">
+                                <span>Poor</span>
+                                <span>Excellent</span>
+                            </div>
+                            <input type="hidden" id="cleanliness" name="cleanliness" required>
+                        </div>
+                        
+                        <div class="rating-question">
+                            <div class="question-text">How likely are you to recommend our clinic to others?</div>
+                            <div class="star-rating" id="recommendRating">
+                                <span class="star" data-rating="1">★</span>
+                                <span class="star" data-rating="2">★</span>
+                                <span class="star" data-rating="3">★</span>
+                                <span class="star" data-rating="4">★</span>
+                                <span class="star" data-rating="5">★</span>
+                            </div>
+                            <div class="rating-labels">
+                                <span>Not Likely</span>
+                                <span>Very Likely</span>
+                            </div>
+                            <input type="hidden" id="recommend" name="recommend" required>
+                        </div>
+                        
+                        <div class="rating-question">
+                            <div class="question-text">Overall satisfaction with your visit</div>
+                            <div class="star-rating" id="overallRating">
+                                <span class="star" data-rating="1">★</span>
+                                <span class="star" data-rating="2">★</span>
+                                <span class="star" data-rating="3">★</span>
+                                <span class="star" data-rating="4">★</span>
+                                <span class="star" data-rating="5">★</span>
+                            </div>
+                            <div class="rating-labels">
+                                <span>Very Dissatisfied</span>
+                                <span>Very Satisfied</span>
+                            </div>
+                            <input type="hidden" id="overall" name="overall" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comments">Additional Comments or Suggestions</label>
+                        <textarea id="comments" placeholder="What did you like most about your visit? Is there anything we could improve?"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-feedback">
+                        <i class="fas fa-paper-plane"></i> Submit Feedback
+                    </button>
+                </form>
+                
+                <div class="confirmation-message" id="confirmationMessage">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Thank You for Your Feedback!</h3>
+                    <p>Your detailed feedback has been submitted successfully. We appreciate your input and will use it to improve our services.</p>
+                    <p>Your responses help us provide better care for all our patients.</p>
+                    <button class="btn btn-primary" onclick="closeFeedbackModal()">
+                        <i class="fas fa-check"></i> Done
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update the appointments count in stats
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update the appointments count to 3
+            const appointmentCount = document.querySelector('.stat-card:nth-child(1) .stat-info h3');
+            appointmentCount.textContent = '3';
+            
+            // Initialize star ratings for all questions
+            initializeAllStarRatings();
+            updateProgressBar();
+        });
+
+        // Appointment management functions
+        function rescheduleAppointment(appointmentId) {
+            alert(`Rescheduling appointment #${appointmentId}. You will be redirected to the booking page.`);
+        }
+
+        function cancelAppointment(appointmentId) {
+            if (confirm('Are you sure you want to cancel this appointment?')) {
+                alert(`Appointment #${appointmentId} has been cancelled.`);
+            }
+        }
+
+        // Quick access functions
+        function viewMedicalRecords() {
+            alert('Opening medical records...');
+        }
+
+        function viewPrescriptions() {
+            alert('Opening prescriptions...');
+        }
+
+        function sendMessageToDoctor() {
+            alert('Opening messaging interface...');
+        }
+
+        function requestDelivery() {
+            window.location.href = 'medication-delivery.html';
+        }
+
+        function viewFailedDeliveries() {
+            window.location.href = 'failed-deliveries.html';
+        }
+
+        function viewLabResults() {
+            alert('Opening lab results...');
+        }
+
+        function giveFeedback() {
+            document.getElementById('feedbackModal').style.display = 'flex';
+        }
+        
+        function closeFeedbackModal() {
+            document.getElementById('feedbackModal').style.display = 'none';
+            // Reset form when closing
+            document.getElementById('feedbackForm').reset();
+            document.getElementById('confirmationMessage').style.display = 'none';
+            document.getElementById('feedbackForm').style.display = 'block';
+            resetAllStarRatings();
+            updateProgressBar();
+        }
+        
+        // Initialize all star rating systems
+        function initializeAllStarRatings() {
+            const ratingQuestions = [
+                { containerId: 'communicationRating', inputId: 'communication' },
+                { containerId: 'waitingRating', inputId: 'waiting' },
+                { containerId: 'cleanlinessRating', inputId: 'cleanliness' },
+                { containerId: 'recommendRating', inputId: 'recommend' },
+                { containerId: 'overallRating', inputId: 'overall' }
+            ];
+            
+            ratingQuestions.forEach(question => {
+                initializeStarRating(question.containerId, question.inputId);
+            });
+        }
+        
+        // Initialize a single star rating system
+        function initializeStarRating(containerId, inputId) {
+            const stars = document.querySelectorAll(`#${containerId} .star`);
+            const ratingInput = document.getElementById(inputId);
+            
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = this.getAttribute('data-rating');
+                    ratingInput.value = rating;
+                    
+                    // Update star appearance
+                    stars.forEach(s => {
+                        if (s.getAttribute('data-rating') <= rating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                    
+                    updateProgressBar();
+                });
+                
+                star.addEventListener('mouseover', function() {
+                    const rating = this.getAttribute('data-rating');
+                    
+                    // Preview star rating on hover
+                    stars.forEach(s => {
+                        if (s.getAttribute('data-rating') <= rating) {
+                            s.style.color = 'var(--warning)';
+                        } else {
+                            s.style.color = 'var(--gray-light)';
+                        }
+                    });
+                });
+                
+                star.addEventListener('mouseout', function() {
+                    // Reset to current selection
+                    const currentRating = ratingInput.value;
+                    stars.forEach(s => {
+                        if (currentRating && s.getAttribute('data-rating') <= currentRating) {
+                            s.style.color = 'var(--warning)';
+                        } else {
+                            s.style.color = 'var(--gray-light)';
+                        }
+                    });
+                });
+            });
+        }
+        
+        // Reset all star ratings
+        function resetAllStarRatings() {
+            const allStars = document.querySelectorAll('.star');
+            const allInputs = document.querySelectorAll('input[type="hidden"][id$="Rating"]');
+            
+            allStars.forEach(star => {
+                star.classList.remove('active');
+                star.style.color = 'var(--gray-light)';
+            });
+            
+            allInputs.forEach(input => {
+                input.value = '';
+            });
+        }
+        
+        // Update progress bar based on completed ratings
+        function updateProgressBar() {
+            const ratingInputs = [
+                document.getElementById('communication'),
+                document.getElementById('waiting'),
+                document.getElementById('cleanliness'),
+                document.getElementById('recommend'),
+                document.getElementById('overall')
+            ];
+            
+            const completed = ratingInputs.filter(input => input.value !== '').length;
+            const total = ratingInputs.length;
+            const progress = (completed / total) * 100;
+            
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+        
+        // Handle form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const appointment = document.getElementById('appointment').value;
+            const communication = document.getElementById('communication').value;
+            const waiting = document.getElementById('waiting').value;
+            const cleanliness = document.getElementById('cleanliness').value;
+            const recommend = document.getElementById('recommend').value;
+            const overall = document.getElementById('overall').value;
+            const comments = document.getElementById('comments').value;
+            
+            // In a real application, you would send this data to a server
+            console.log({
+                appointment: appointment,
+                ratings: {
+                    communication: communication,
+                    waiting: waiting,
+                    cleanliness: cleanliness,
+                    recommend: recommend,
+                    overall: overall
+                },
+                comments: comments
+            });
+            
+            // Calculate average rating
+            const ratings = [communication, waiting, cleanliness, recommend, overall]
+                .filter(r => r !== '')
+                .map(r => parseInt(r));
+            
+            const averageRating = ratings.length > 0 ? 
+                (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : 'N/A';
+            
+            console.log('Average Rating:', averageRating);
+            
+            // Show confirmation message
+            document.getElementById('feedbackForm').style.display = 'none';
+            document.getElementById('confirmationMessage').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

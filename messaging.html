@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messaging - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/messaging.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-comments"></i>
+                    <h2>Messaging</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="../index.html"><i class="fas fa-home"></i> Main Menu</a></li>
+                <li class="active"><a href="messaging.html"><i class="fas fa-inbox"></i> Inbox</a></li>
+                <li><a href="compose-message.html"><i class="fas fa-edit"></i> Compose</a></li>
+                <li><a href="sent-messages.html"><i class="fas fa-paper-plane"></i> Sent</a></li>
+                <li><a href="message-templates.html"><i class="fas fa-stamp"></i> Templates</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Secure Messaging</h1>
+                    <p>Instant communication between healthcare providers and patients</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">8</span>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="composeMessage()">
+                            <i class="fas fa-edit"></i> New Message
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>12</h3>
+                        <p>Unread Messages</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 20%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>8</h3>
+                        <p>Active Conversations</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 15%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>2.3</h3>
+                        <p>Avg Response (hours)</p>
+                    </div>
+                    <div class="stat-trend down">
+                        <i class="fas fa-arrow-down"></i> 25%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>100%</h3>
+                        <p>Secure & Encrypted</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-check"></i> Protected
+                    </div>
+                </div>
+            </div>
+
+            <div class="messaging-container">
+                <!-- Conversations Sidebar -->
+                <div class="conversations-sidebar">
+                    <div class="sidebar-header">
+                        <h3>Conversations</h3>
+                        <button class="btn btn-small" onclick="startNewConversation()">
+                            <i class="fas fa-plus"></i> New
+                        </button>
+                    </div>
+                    
+                    <div class="conversation-search">
+                        <input type="text" placeholder="Search conversations..." onkeyup="searchConversations(this.value)">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    
+                    <div class="conversation-list">
+                        <div class="conversation-item active" onclick="selectConversation('dr-mkhize')">
+                            <div class="conversation-avatar">
+                                <img src="https://ui-avatars.com/api/?name=Dr+Mkhize&background=667eea&color=fff" alt="Dr. Mkhize">
+                            </div>
+                            <div class="conversation-info">
+                                <h4>Dr. Banele Mkhize</h4>
+                                <p>Regarding your test results from yesterday...</p>
+                                <span class="conversation-time">10:30 AM</span>
+                            </div>
+                            <div class="conversation-badge">
+                                <span class="badge">3</span>
+                            </div>
+                        </div>
+                        
+                        <div class="conversation-item" onclick="selectConversation('nurse-sarah')">
+                            <div class="conversation-avatar">
+                                <img src="https://ui-avatars.com/api/?name=Nurse+Sarah&background=f093fb&color=fff" alt="Nurse Sarah">
+                            </div>
+                            <div class="conversation-info">
+                                <h4>Nurse Sarah</h4>
+                                <p>Your prescription is ready for pickup</p>
+                                <span class="conversation-time">Yesterday</span>
+                            </div>
+                            <div class="conversation-badge">
+                                <span class="badge">1</span>
+                            </div>
+                        </div>
+                        
+                        <div class="conversation-item" onclick="selectConversation('pharmacy')">
+                            <div class="conversation-avatar">
+                                <img src="https://ui-avatars.com/api/?name=Pharmacy&background=43e97b&color=fff" alt="Pharmacy">
+                            </div>
+                            <div class="conversation-info">
+                                <h4>Pharmacy Team</h4>
+                                <p>Medication delivery scheduled for tomorrow</p>
+                                <span class="conversation-time">Nov 12</span>
+                            </div>
+                        </div>
+                        
+                        <div class="conversation-item" onclick="selectConversation('lab-results')">
+                            <div class="conversation-avatar">
+                                <img src="https://ui-avatars.com/api/?name=Lab+Team&background=17a2b8&color=fff" alt="Lab">
+                            </div>
+                            <div class="conversation-info">
+                                <h4>Laboratory</h4>
+                                <p>Your blood test results are available</p>
+                                <span class="conversation-time">Nov 11</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Area -->
+                <div class="chat-area">
+                    <div class="chat-header">
+                        <div class="chat-partner">
+                            <img src="https://ui-avatars.com/api/?name=Dr+Mkhize&background=667eea&color=fff" alt="Dr. Mkhize">
+                            <div class="partner-info">
+                                <h4>Dr. Banele Mkhize</h4>
+                                <span class="partner-status online">Online</span>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="btn btn-outline" onclick="voiceCall()">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                            <button class="btn btn-outline" onclick="videoCall()">
+                                <i class="fas fa-video"></i>
+                            </button>
+                            <button class="btn btn-outline" onclick="showConversationInfo()">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages">
+                        <div class="message-date">
+                            <span>Today</span>
+                        </div>
+                        
+                        <div class="message received">
+                            <div class="message-avatar">
+                                <img src="https://ui-avatars.com/api/?name=Dr+Mkhize&background=667eea&color=fff" alt="Dr. Mkhize">
+                            </div>
+                            <div class="message-content">
+                                <p>Good morning! I've reviewed your test results from yesterday.</p>
+                                <span class="message-time">10:15 AM</span>
+                            </div>
+                        </div>
+                        
+                        <div class="message received">
+                            <div class="message-avatar">
+                                <img src="https://ui-avatars.com/api/?name=Dr+Mkhize&background=667eea&color=fff" alt="Dr. Mkhize">
+                            </div>
+                            <div class="message-content">
+                                <p>Your blood work looks good overall. The cholesterol levels have improved significantly since your last test.</p>
+                                <span class="message-time">10:16 AM</span>
+                            </div>
+                        </div>
+                        
+                        <div class="message sent">
+                            <div class="message-content">
+                                <p>That's great news! Thank you for the update.</p>
+                                <span class="message-time">10:18 AM</span>
+                            </div>
+                            <div class="message-avatar">
+                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=4facfe&color=fff" alt="You">
+                            </div>
+                        </div>
+                        
+                        <div class="message received">
+                            <div class="message-avatar">
+                                <img src="https://ui-avatars.com/api/?name=Dr+Mkhize&background=667eea&color=fff" alt="Dr. Mkhize">
+                            </div>
+                            <div class="message-content">
+                                <p>I'd like to schedule a follow-up in 3 months to check your progress. Would you like me to book that for you?</p>
+                                <span class="message-time">10:20 AM</span>
+                            </div>
+                        </div>
+                        
+                        <div class="message sent">
+                            <div class="message-content">
+                                <p>Yes, please schedule the follow-up. Any time that works for you is fine with me.</p>
+                                <span class="message-time">10:22 AM</span>
+                            </div>
+                            <div class="message-avatar">
+                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=4facfe&color=fff" alt="You">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <div class="input-tools">
+                            <button class="tool-btn" onclick="attachFile()">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <button class="tool-btn" onclick="insertTemplate()">
+                                <i class="fas fa-stamp"></i>
+                            </button>
+                            <button class="tool-btn" onclick="toggleEmoji()">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                        </div>
+                        <div class="message-input">
+                            <textarea placeholder="Type your message..." rows="1" oninput="autoResize(this)"></textarea>
+                            <button class="send-btn" onclick="sendMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../scripts/messaging.js"></script>
+</body>
+</html>

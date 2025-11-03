@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --gray-light: #bdc3c7;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--secondary);
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--secondary), var(--accent));
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hospital-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hospital-logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .hospital-logo h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 24px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray-dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 20px;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: rgba(52, 152, 219, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .stat-info h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+
+        .stat-info p {
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .stat-trend {
+            margin-left: auto;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .stat-trend.up {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .stat-trend.down {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        /* Content Sections */
+        .content-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            margin: 0 30px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--gray-light);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            background-color: #f8f9fa;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            color: var(--secondary);
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Schedule List */
+        .schedule-list {
+            padding: 20px;
+            display: grid;
+            gap: 15px;
+        }
+
+        .schedule-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .schedule-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .schedule-item.urgent {
+            border-left-color: var(--danger);
+        }
+
+        .schedule-item.in-progress {
+            border-left-color: var(--warning);
+        }
+
+        .schedule-time {
+            font-weight: 600;
+            color: var(--primary);
+            width: 100px;
+        }
+
+        .schedule-details h4 {
+            margin: 0 0 5px 0;
+            color: var(--secondary);
+        }
+
+        .schedule-details p {
+            margin: 0;
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.urgent {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .status-badge.scheduled {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary);
+        }
+
+        .status-badge.in-progress {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        /* Quick Actions Grid */
+        .quick-actions-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .action-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-light);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(52, 152, 219, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary);
+            margin: 0 auto 15px;
+        }
+
+        .action-card h4 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .action-card p {
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Doctor Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-user-md"></i>
+                    <h2>Doctor Portal</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="active"><a href="doctor-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="doctor-consultations.html"><i class="fas fa-stethoscope"></i> Consultations</a></li>
+                <li><a href="doctor-patients.html"><i class="fas fa-users"></i> My Patients</a></li>
+                <li><a href="doctor-diagnostics.html"><i class="fas fa-microscope"></i> Diagnostics</a></li>
+                <li><a href="doctor-prescriptions.html"><i class="fas fa-prescription"></i> Prescriptions</a></li>
+                <li><a href="doctor-referrals.html"><i class="fas fa-file-medical"></i> Referrals</a></li>
+                <li><a href="doctor-messaging.html" onclick="redirectToDoctorMessaging()"><i class="fas fa-comments"></i> Messaging</a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Switch User</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Dr+Smith&background=667eea&color=fff" alt="Doctor">
+                    <div class="user-info">
+                        <span class="user-name">Dr. Banele Mkhize</span>
+                        <span class="user-role">Senior Physician</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Doctor Dashboard</h1>
+                    <p>Welcome back, Dr. Mkhize. You have 8 consultations today.</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">5</span>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="startNewConsultation()">
+                            <i class="fas fa-plus"></i> New Consultation
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Doctor Specific Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>8</h3>
+                        <p>Today's Appointments</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 15%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>In Progress</p>
+                    </div>
+                    <div class="stat-trend down">
+                        <i class="fas fa-arrow-down"></i> 2%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-medical"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>12</h3>
+                        <p>Pending Reports</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 8%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-prescription"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>5</h3>
+                        <p>Prescriptions Today</p>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 25%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Schedule -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Today's Schedule</h2>
+                    <a href="doctor-consultations.html" class="view-all">View All</a>
+                </div>
+                <div class="schedule-list">
+                    <div class="schedule-item urgent">
+                        <div class="schedule-time">09:00 AM</div>
+                        <div class="schedule-details">
+                            <h4>John Doe - Follow Up</h4>
+                            <p>Hypertension Management • Room 201</p>
+                        </div>
+                        <div class="schedule-status">
+                            <span class="status-badge urgent">Urgent</span>
+                        </div>
+                    </div>
+                    
+                    <div class="schedule-item">
+                        <div class="schedule-time">10:30 AM</div>
+                        <div class="schedule-details">
+                            <h4>Sarah Smith - New Patient</h4>
+                            <p>General Consultation • Room 203</p>
+                        </div>
+                        <div class="schedule-status">
+                            <span class="status-badge scheduled">Scheduled</span>
+                        </div>
+                    </div>
+                    
+                    <div class="schedule-item in-progress">
+                        <div class="schedule-time">11:15 AM</div>
+                        <div class="schedule-details">
+                            <h4>Mike Johnson - Lab Review</h4>
+                            <p>Blood Test Results • Room 205</p>
+                        </div>
+                        <div class="schedule-status">
+                            <span class="status-badge in-progress">In Progress</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="quick-actions-grid">
+                    <div class="action-card" onclick="requestDiagnosticTest()">
+                        <div class="action-icon">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <h4>Request Diagnostic Test</h4>
+                        <p>Order lab tests or medical imaging</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="uploadMedicalImage()">
+                        <div class="action-icon">
+                            <i class="fas fa-file-image"></i>
+                        </div>
+                        <h4>Upload Medical Image</h4>
+                        <p>Attach X-rays, scans or lab images</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="window.location.href='doctor-referrals.html'">
+                        <div class="action-icon">
+                            <i class="fas fa-hospital-user"></i>
+                        </div>
+                        <h4>Refer Patient</h4>
+                        <p>Create external referral letters</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="prescribeMedication()">
+                        <div class="action-icon">
+                            <i class="fas fa-prescription"></i>
+                        </div>
+                        <h4>Prescribe Medication</h4>
+                        <p>Create new prescriptions</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function startNewConsultation() {
+            alert('Starting new consultation...');
+        }
+
+        function requestDiagnosticTest() {
+    window.location.href = 'doctor-diagnostics.html';
+}
+function uploadMedicalImage() {
+    window.location.href = 'doctor-upload-images.html';
+}
+
+        function prescribeMedication() {
+            alert('Opening prescription form...');
+        }
+        
+        <nav>
+    <ul>
+        <li><a href="doctor-dashboard.html">Dashboard</a></li>
+        <li><a href="doctor-messaging.html" onclick="redirectToDoctorMessaging()">Messaging</a></li>
+        <li><a href="doctor-patients.html">Patients</a></li>
+    </ul>
+
+</nav>
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Follow-up Consultation - DUT Clinic</title>
+    <link rel="stylesheet" href="../styles/appointments.css">
+</head>
+<body>
+    <div class="followup-container">
+        <div class="followup-header">
+            <h1>Schedule Follow-up Consultation</h1>
+            <button class="back-btn" onclick="goBack()">← Back to Appointments</button>
+        </div>
+
+        <div class="followup-content">
+            <!-- Recent Appointments Column -->
+            <div class="recent-appointments">
+                <h3>Recent Patient Appointments</h3>
+                <div class="appointment-list" id="recentAppointments">
+                    <!-- Appointments will be loaded here by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Schedule Form Column -->
+            <div class="schedule-form-section">
+                <h3>Schedule New Follow-up</h3>
+                
+                <div class="patient-search">
+                    <h4>Find Patient</h4>
+                    <input type="text" id="patientSearch" placeholder="Enter student number or name..." onkeyup="searchPatients()">
+                    <div id="searchResults" class="search-results"></div>
+                </div>
+
+                <div class="appointment-form" id="appointmentForm" style="display: none;">
+                    <form id="followupForm">
+                        <div class="form-group">
+                            <label for="patientInfo">Selected Patient:</label>
+                            <div id="patientInfo" class="patient-info-display"></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="chronicCondition">Medical Condition:</label>
+                                <select id="chronicCondition" required>
+                                    <option value="">Select condition</option>
+                                    <option value="hypertension">Hypertension</option>
+                                    <option value="diabetes">Diabetes</option>
+                                    <option value="asthma">Asthma</option>
+                                    <option value="flu">Flu/Fever</option>
+                                    <option value="injury">Injury</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="doctorSelect">Refer to Doctor:</label>
+                                <select id="doctorSelect" required>
+    <option value="">Select Doctor</option>
+    <option value="dr_yousaf">Dr. Yousaf</option>
+    <option value="dr_smith">Dr. Smith</option>
+    <option value="dr_jones">Dr. Jones</option>
+    <option value="dr_johnson">Dr. Sarah Johnson</option>
+    <option value="dr_patel">Dr. Patel</option>
+    <option value="dr_ngubane">Dr. Ngubane</option>
+    <option value="dr_van_der_merwe">Dr. Van der Merwe</option>
+</select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="followupReason">Reason for Follow-up:</label>
+                            <textarea id="followupReason" placeholder="Detailed reason for doctor follow-up. Include symptoms, observations, and concerns..." rows="4" required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="appointmentDate">Follow-up Date:</label>
+                                <input type="date" id="appointmentDate" required min="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="appointmentTime">Preferred Time:</label>
+                                <select id="appointmentTime" required>
+                                    <option value="">Select time</option>
+                                    <option value="08:00">08:00 AM</option>
+                                    <option value="09:00">09:00 AM</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="11:00">11:00 AM</option>
+                                    <option value="13:00">01:00 PM</option>
+                                    <option value="14:00">02:00 PM</option>
+                                    <option value="15:00">03:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="back-btn" onclick="cancelSchedule()">Cancel</button>
+                            <button type="submit" class="action-btn">Schedule Follow-up</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Success Message -->
+                <div id="successMessage" class="success-message">
+                    <strong>✓ Success!</strong> Follow-up appointment has been scheduled. The patient will receive reminders automatically.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/followup-appointment.js"></script>
+</body>
+</html>

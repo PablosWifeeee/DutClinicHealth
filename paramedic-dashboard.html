@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramedic Dashboard - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --gray-light: #bdc3c7;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--secondary);
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--secondary), var(--accent));
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hospital-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hospital-logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .hospital-logo h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 24px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray-dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 20px;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-actions .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .quick-actions .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.danger {
+            border-left-color: var(--danger);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: rgba(52, 152, 219, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .stat-card.warning .stat-icon {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-card.danger .stat-icon {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .stat-info h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+
+        .stat-info p {
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .stat-trend {
+            margin-left: auto;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .stat-trend.warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-trend.danger {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        /* Content Sections */
+        .content-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            margin: 0 30px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--gray-light);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            background-color: #f8f9fa;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            color: var(--secondary);
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Emergency Section */
+        .emergency-alert {
+            background-color: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 0 20px 20px;
+            color: var(--secondary);
+        }
+
+        .emergency-list {
+            padding: 20px;
+            display: grid;
+            gap: 15px;
+        }
+
+        .emergency-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .emergency-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .emergency-info h4 {
+            margin: 0 0 5px 0;
+            color: var(--primary);
+        }
+
+        .emergency-info p {
+            margin: 0;
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .emergency-info small {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        .emergency-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .badge-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .badge-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            background-color: var(--primary);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: white;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .close-btn:hover {
+            color: #f8f9fa;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .emergency-info {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            width: 150px;
+            color: var(--secondary);
+        }
+        
+        .info-value {
+            flex: 1;
+            color: var(--gray-dark);
+        }
+        
+        .reference-number {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: var(--white);
+            color: var(--secondary);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray-dark);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        /* Action Buttons Section */
+        .action-buttons-section {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .action-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-light);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(52, 152, 219, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary);
+            margin: 0 auto 15px;
+        }
+
+        .action-card h3 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .action-card p {
+            color: var(--gray-dark);
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        /* Ambulance Grid Styles */
+        .ambulance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .ambulance-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-light);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .ambulance-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .ambulance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .ambulance-id {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .ambulance-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .status-en-route {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .status-on-scene {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary);
+        }
+
+        .status-transporting {
+            background-color: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+        }
+
+        .status-maintenance {
+            background-color: rgba(149, 165, 166, 0.1);
+            color: var(--gray);
+        }
+
+        .status-out-of-service {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .ambulance-details {
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .detail-label {
+            color: var(--gray-dark);
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: var(--secondary);
+        }
+
+        .ambulance-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            flex: 1;
+        }
+
+        /* Status Update Form */
+        .status-update-form {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid var(--gray-light);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-ambulance"></i>
+                    <h2>Paramedic Portal</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="active"><a href="paramedic-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="emergency-records.html"><i class="fas fa-phone-alt"></i> Emergency Records</a></li>
+                <li><a href="patient-care.html"><i class="fas fa-heartbeat"></i> Patient Care</a></li>
+                <li><a href="dispatch-tracking.html"><i class="fas fa-map-marked-alt"></i> Dispatch Tracking</a></li>
+                <li><a href="ambulance-status.html"><i class="fas fa-ambulance"></i> Ambulance Status</a></li>
+                <li><a href="medical-supplies.html"><i class="fas fa-first-aid"></i> Medical Supplies</a></li>
+                <li><a href="paramedic-schedule.html"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+                <li><a href="messaging.html"><i class="fas fa-comments"></i> Messages</a></li>
+                <li><a href="../index.html"><i class="fas fa-sign-out-alt"></i> Switch User</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Paramedic+Alex&background=3498db&color=fff" alt="Paramedic">
+                    <div class="user-info">
+                        <span class="user-name">Alex Morgan</span>
+                        <span class="user-role">Senior Paramedic</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Paramedic Dashboard</h1>
+                    <p>Welcome back, Alex. Ready for emergency response.</p>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">5</span>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="goOnDuty()">
+                            <i class="fas fa-play-circle"></i> Go On Duty
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>12</h3>
+                        <p>Total Calls Today</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i> 15%
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>Active Emergencies</p>
+                    </div>
+                    <div class="stat-trend warning">
+                        <i class="fas fa-exclamation"></i> Response needed
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>8</h3>
+                        <p>Completed Today</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i> On track
+                    </div>
+                </div>
+                
+                <div class="stat-card danger">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-injured"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>1</h3>
+                        <p>Critical Patients</p>
+                    </div>
+                    <div class="stat-trend danger">
+                        <i class="fas fa-exclamation"></i> Immediate care
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons Section -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="action-buttons-section">
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-ambulance"></i>
+                        </div>
+                        <h3>Manage Ambulance Availability</h3>
+                        <p>Update ambulance status in real-time with timestamps</p>
+                        <button class="btn btn-primary" onclick="openAmbulanceStatusModal()">
+                            Update Status
+                        </button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3>Log Emergency Request</h3>
+                        <p>Process emergency requests from students across campus</p>
+                        <a href="log-request.html" class="btn btn-success">
+                            Process Requests
+                        </a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <h3>Dispatch Emergency Vehicle</h3>
+                        <p>Assign available ambulances to emergency responses</p>
+                        <a href="dispatch-tracking.html" class="btn btn-warning">
+                            Dispatch Vehicle
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Section -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Active Emergency Calls</h2>
+                    <span class="badge badge-danger">3 Active</span>
+                </div>
+                
+                <div class="emergency-alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Emergency Response Required:</strong> The following students require immediate medical attention.
+                </div>
+                
+                <div class="emergency-list">
+                    <div class="emergency-item">
+                        <div class="emergency-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>Student ID: 22123457 • Location: Library, 2nd Floor • Condition: Severe Allergic Reaction</p>
+                            <small>Emergency reported: 5 minutes ago • Priority: <span class="badge badge-danger">HIGH</span></small>
+                        </div>
+                        <div class="emergency-actions">
+                            <a href="emergency-records.html" class="btn btn-primary">
+                                View Details
+                            </a>
+                            <a href="dispatch-tracking.html" class="btn btn-success">
+                                Assign Ambulance
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="emergency-item">
+                        <div class="emergency-info">
+                            <h4>Michael Brown</h4>
+                            <p>Student ID: 22123458 • Location: Sports Complex • Condition: Suspected Fractured Arm</p>
+                            <small>Emergency reported: 8 minutes ago • Priority: <span class="badge badge-warning">MEDIUM</span></small>
+                        </div>
+                        <div class="emergency-actions">
+                            <a href="emergency-records.html" class="btn btn-primary">
+                                View Details
+                            </a>
+                            <a href="dispatch-tracking.html" class="btn btn-success">
+                                Assign Ambulance
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="emergency-item">
+                        <div class="emergency-info">
+                            <h4>Emily Davis</h4>
+                            <p>Student ID: 22123459 • Location: Student Residence B, Room 305 • Condition: Severe Asthma Attack</p>
+                            <small>Emergency reported: 12 minutes ago • Priority: <span class="badge badge-danger">HIGH</span></small>
+                        </div>
+                        <div class="emergency-actions">
+                            <a href="emergency-records.html" class="btn btn-primary">
+                                View Details
+                            </a>
+                            <a href="dispatch-tracking.html" class="btn btn-success">
+                                Assign Ambulance
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Available Ambulances</h2>
+                    <a href="ambulance-status.html" class="view-all">View All</a>
+                </div>
+                
+                <div class="ambulance-grid" id="ambulanceGrid">
+                    <!-- Ambulance cards will be dynamically generated here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Manage Ambulance Availability Modal -->
+    <div class="modal-overlay" id="ambulanceStatusModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Manage Ambulance Availability</h3>
+                <button class="close-btn" onclick="closeAmbulanceStatusModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="ambulance-grid" id="modalAmbulanceGrid">
+                    <!-- Ambulance cards for the modal will be dynamically generated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeAmbulanceStatusModal()">Close</button>
+                <button class="btn btn-primary" onclick="saveAllAmbulanceStatuses()">
+                    <i class="fas fa-save"></i> Save All Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ambulance data structure
+        let ambulances = {
+            'AMB-001': { 
+                id: 'AMB-001',
+                status: 'available',
+                crew: '2 Paramedics',
+                equipment: 'Fully Stocked',
+                location: 'Main Campus',
+                lastMaintenance: '2 days ago',
+                lastUpdated: '2023-11-15 14:30:00',
+                currentAssignment: null
+            },
+            'AMB-002': { 
+                id: 'AMB-002',
+                status: 'on_scene',
+                crew: '2 Paramedics',
+                equipment: 'Fully Stocked',
+                location: 'Sports Complex',
+                lastMaintenance: '5 days ago',
+                lastUpdated: '2023-11-15 14:15:00',
+                currentAssignment: 'Michael Brown - Fractured Arm'
+            },
+            'AMB-003': { 
+                id: 'AMB-003',
+                status: 'available',
+                crew: '1 Paramedic, 1 EMT',
+                equipment: 'Fully Stocked',
+                location: 'North Campus',
+                lastMaintenance: '3 days ago',
+                lastUpdated: '2023-11-15 13:45:00',
+                currentAssignment: null
+            },
+            'AMB-004': { 
+                id: 'AMB-004',
+                status: 'transporting',
+                crew: '2 Paramedics',
+                equipment: 'Fully Stocked',
+                location: 'En route to Hospital',
+                lastMaintenance: '1 day ago',
+                lastUpdated: '2023-11-15 14:05:00',
+                currentAssignment: 'Patient transport'
+            },
+            'AMB-005': { 
+                id: 'AMB-005',
+                status: 'maintenance',
+                crew: 'N/A',
+                equipment: 'Under Maintenance',
+                location: 'Service Center',
+                lastMaintenance: 'Ongoing',
+                lastUpdated: '2023-11-15 10:20:00',
+                currentAssignment: 'Scheduled maintenance'
+            }
+        };
+
+        // Function to generate ambulance card HTML
+        function generateAmbulanceCard(ambulance, isModal = false) {
+            const statusClass = `status-${ambulance.status.replace('_', '-')}`;
+            const statusText = ambulance.status.replace('_', ' ').toUpperCase();
+            
+            return `
+                <div class="ambulance-card" data-ambulance-id="${ambulance.id}">
+                    <div class="ambulance-header">
+                        <div class="ambulance-id">${ambulance.id}</div>
+                        <div class="ambulance-status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="ambulance-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Crew:</span>
+                            <span class="detail-value">${ambulance.crew}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Equipment:</span>
+                            <span class="detail-value">${ambulance.equipment}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Location:</span>
+                            <span class="detail-value">${ambulance.location}</span>
+                        </div>
+                        ${ambulance.currentAssignment ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Assignment:</span>
+                            <span class="detail-value">${ambulance.currentAssignment}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ${isModal ? `
+                    <div class="status-update-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="status-${ambulance.id}">Update Status</label>
+                                <select id="status-${ambulance.id}" class="form-control" onchange="updateAmbulanceStatus('${ambulance.id}')">
+                                    <option value="available" ${ambulance.status === 'available' ? 'selected' : ''}>Available</option>
+                                    <option value="en_route" ${ambulance.status === 'en_route' ? 'selected' : ''}>En Route</option>
+                                    <option value="on_scene" ${ambulance.status === 'on_scene' ? 'selected' : ''}>On Scene</option>
+                                    <option value="transporting" ${ambulance.status === 'transporting' ? 'selected' : ''}>Transporting</option>
+                                    <option value="maintenance" ${ambulance.status === 'maintenance' ? 'selected' : ''}>Maintenance</option>
+                                    <option value="out_of_service" ${ambulance.status === 'out_of_service' ? 'selected' : ''}>Out of Service</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes-${ambulance.id}">Status Notes</label>
+                            <textarea id="notes-${ambulance.id}" class="form-control" rows="2" placeholder="Add notes about status change...">${ambulance.notes || ''}</textarea>
+                        </div>
+                        <div class="timestamp">
+                            Last updated: ${ambulance.lastUpdated}
+                        </div>
+                    </div>
+                    ` : `
+                    <div class="ambulance-actions">
+                        <button class="btn btn-primary btn-small" onclick="viewAmbulanceDetails('${ambulance.id}')">
+                            <i class="fas fa-info-circle"></i> Details
+                        </button>
+                        <button class="btn btn-warning btn-small" onclick="updateSingleAmbulance('${ambulance.id}')">
+                            <i class="fas fa-edit"></i> Update
+                        </button>
+                    </div>
+                    `}
+                </div>
+            `;
+        }
+
+        // Function to render ambulance grid
+        function renderAmbulanceGrid(containerId, isModal = false) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            Object.values(ambulances).forEach(ambulance => {
+                container.innerHTML += generateAmbulanceCard(ambulance, isModal);
+            });
+        }
+
+        // Function to update ambulance status
+        function updateAmbulanceStatus(ambulanceId) {
+            const statusSelect = document.getElementById(`status-${ambulanceId}`);
+            const notesTextarea = document.getElementById(`notes-${ambulanceId}`);
+            
+            if (statusSelect && notesTextarea) {
+                const newStatus = statusSelect.value;
+                const notes = notesTextarea.value;
+                const now = new Date();
+                const timestamp = now.toLocaleString();
+                
+                // Update the ambulance data
+                ambulances[ambulanceId].status = newStatus;
+                ambulances[ambulanceId].notes = notes;
+                ambulances[ambulanceId].lastUpdated = timestamp;
+                
+                // Update the display in real-time
+                renderAmbulanceGrid('ambulanceGrid');
+                renderAmbulanceGrid('modalAmbulanceGrid', true);
+                
+                console.log(`Ambulance ${ambulanceId} status updated to ${newStatus}`);
+            }
+        }
+
+        // Function to update a single ambulance (for the dashboard view)
+        function updateSingleAmbulance(ambulanceId) {
+            openAmbulanceStatusModal();
+            // Focus on the specific ambulance in the modal
+            setTimeout(() => {
+                const ambulanceCard = document.querySelector(`[data-ambulance-id="${ambulanceId}"]`);
+                if (ambulanceCard) {
+                    ambulanceCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    ambulanceCard.style.boxShadow = '0 0 0 2px #3498db';
+                    setTimeout(() => {
+                        ambulanceCard.style.boxShadow = '';
+                    }, 2000);
+                }
+            }, 300);
+        }
+
+        // Function to view ambulance details
+        function viewAmbulanceDetails(ambulanceId) {
+            const ambulance = ambulances[ambulanceId];
+            alert(`Ambulance Details:\n\nID: ${ambulance.id}\nStatus: ${ambulance.status}\nCrew: ${ambulance.crew}\nLocation: ${ambulance.location}\nLast Updated: ${ambulance.lastUpdated}`);
+        }
+
+        // Modal control functions
+        function openAmbulanceStatusModal() {
+            document.getElementById('ambulanceStatusModal').style.display = 'flex';
+            renderAmbulanceGrid('modalAmbulanceGrid', true);
+        }
+
+        function closeAmbulanceStatusModal() {
+            document.getElementById('ambulanceStatusModal').style.display = 'none';
+        }
+
+        // Save all ambulance statuses
+        function saveAllAmbulanceStatuses() {
+            alert('All ambulance status changes have been saved successfully!');
+            closeAmbulanceStatusModal();
+            
+            // In a real application, this would send the data to a server
+            console.log('Ambulance statuses saved:', ambulances);
+        }
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            renderAmbulanceGrid('ambulanceGrid');
+            
+            // Close modal when clicking outside
+            document.getElementById('ambulanceStatusModal').addEventListener('click', function(e) {
+                if (e.target === this) closeAmbulanceStatusModal();
+            });
+        });
+
+        // Other functions
+        function goOnDuty() {
+            alert('You are now on duty and ready for emergency calls.');
+        }
+    </script>
+</body>
+</html>

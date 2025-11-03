@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Consultation - DUT Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/nurse-consultation.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <i class="fas fa-user-nurse"></i>
+                    <h2>Consultation</h2>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="../index.html"><i class="fas fa-home"></i> Main Menu</a></li>
+                <li><a href="nurse-dashboard.html"><i class="fas fa-home"></i> Nurse Dashboard</a></li>
+                <li class="active"><a href="nurse-consultation.html"><i class="fas fa-stethoscope"></i> Consultation</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Patient Consultation</h1>
+                    <p>John Doe - Student #22123456</p>
+                </div>
+                <div class="header-right">
+                    <div class="patient-status">
+                        <span class="status-badge in-progress">Consultation in Progress</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="consultation-container">
+                <!-- Patient Information -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Patient Information</h2>
+                    </div>
+                    <div class="patient-info-grid">
+                        <div class="info-item">
+                            <strong>Name:</strong> John Doe
+                        </div>
+                        <div class="info-item">
+                            <strong>Student #:</strong> 22123456
+                        </div>
+                        <div class="info-item">
+                            <strong>Age:</strong> 22 years
+                        </div>
+                        <div class="info-item">
+                            <strong>Gender:</strong> Male
+                        </div>
+                        <div class="info-item">
+                            <strong>Appointment Type:</strong> General Consultation
+                        </div>
+                        <div class="info-item">
+                            <strong>Chief Complaint:</strong> Headache and fever
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vitals Recording -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Vital Signs</h2>
+                    </div>
+                    <form class="vitals-form" id="vitalsForm">
+                        <div class="vitals-grid">
+                            <div class="vital-item">
+                                <label for="temperature">Temperature (°C)</label>
+                                <input type="number" id="temperature" step="0.1" min="35" max="42" placeholder="37.0">
+                            </div>
+                            <div class="vital-item">
+                                <label for="bloodPressure">Blood Pressure</label>
+                                <input type="text" id="bloodPressure" placeholder="120/80">
+                            </div>
+                            <div class="vital-item">
+                                <label for="heartRate">Heart Rate (BPM)</label>
+                                <input type="number" id="heartRate" min="40" max="200" placeholder="72">
+                            </div>
+                            <div class="vital-item">
+                                <label for="respiratoryRate">Respiratory Rate</label>
+                                <input type="number" id="respiratoryRate" min="8" max="40" placeholder="16">
+                            </div>
+                            <div class="vital-item">
+                                <label for="oxygenSaturation">O2 Saturation (%)</label>
+                                <input type="number" id="oxygenSaturation" min="80" max="100" placeholder="98">
+                            </div>
+                            <div class="vital-item">
+                                <label for="weight">Weight (kg)</label>
+                                <input type="number" id="weight" step="0.1" placeholder="70.5">
+                            </div>
+                            <div class="vital-item">
+                                <label for="height">Height (cm)</label>
+                                <input type="number" id="height" placeholder="175">
+                            </div>
+                            <div class="vital-item">
+                                <label for="bmi">BMI</label>
+                                <input type="number" id="bmi" step="0.1" readonly placeholder="Auto-calculated">
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" onclick="calculateBMI()">
+                                Calculate BMI
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="saveVitals()">
+                                Save Vitals
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Clinical Notes -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Clinical Assessment</h2>
+                    </div>
+                    <form class="clinical-form" id="clinicalForm">
+                        <div class="form-group">
+                            <label for="subjectiveNotes">Subjective Notes</label>
+                            <textarea id="subjectiveNotes" rows="3" placeholder="Patient's description of symptoms..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="objectiveFindings">Objective Findings</label>
+                            <textarea id="objectiveFindings" rows="3" placeholder="Clinical observations and examination findings..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="assessment">Assessment</label>
+                            <textarea id="assessment" rows="2" placeholder="Clinical diagnosis or impression..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="plan">Plan & Treatment</label>
+                            <textarea id="plan" rows="3" placeholder="Treatment plan, medications, recommendations..."></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Follow-up Scheduling -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Follow-up Appointment</h2>
+                    </div>
+                    <form class="followup-form" id="followupForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="followupDate">Follow-up Date *</label>
+                                <input type="date" id="followupDate" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="followupTime">Follow-up Time *</label>
+                                <select id="followupTime">
+                                    <option value="">Select time</option>
+                                    <option value="08:00">08:00 AM</option>
+                                    <option value="09:00">09:00 AM</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="11:00">11:00 AM</option>
+                                    <option value="14:00">02:00 PM</option>
+                                    <option value="15:00">03:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="followupReason">Reason for Follow-up</label>
+                            <textarea id="followupReason" rows="2" placeholder="Reason for the follow-up appointment..."></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary" onclick="scheduleFollowup()">
+                                <i class="fas fa-calendar-plus"></i>
+                                Schedule Follow-up
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Consultation Actions -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Complete Consultation</h2>
+                    </div>
+                    <div class="consultation-actions">
+                        <button class="btn btn-success" onclick="completeConsultation()">
+                            <i class="fas fa-check-circle"></i>
+                            Complete Consultation
+                        </button>
+                        <button class="btn btn-outline" onclick="referToDoctor()">
+                            <i class="fas fa-user-md"></i>
+                            Refer to Doctor
+                        </button>
+                        <button class="btn btn-outline" onclick="prescribeMedication()">
+                            <i class="fas fa-prescription"></i>
+                            Prescribe Medication
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../scripts/nurse-consultation.js"></script>
+</body>
+</html>
